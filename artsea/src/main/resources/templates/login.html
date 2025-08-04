@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ArtSea</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            padding: 20px;
+        }
+        .logo {
+            font-size: 2.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #222;
+            margin-bottom: 40px;
+        }
+        .toggle-form {
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .toggle-form button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: #fff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            color: #888;
+        }
+        .toggle-form button.active {
+            background: #fff;
+            color: #222;
+            border-bottom: 2px solid #222;
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+        .form-section input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .phone-input {
+            display: flex;
+        }
+        .phone-input .country-code {
+            width: 80px;
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+        }
+        .phone-input .mobile-number {
+            flex: 1;
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+        }
+        .terms {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .terms a {
+            color: #222;
+            text-decoration: underline;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #222;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .alt-login {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #222;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">ArtSea</div>
+        <div class="toggle-form">
+            <button id="show-signup" class="active">CREATE AN ACCOUNT</button>
+            <button id="show-signin">SIGN IN</button>
+        </div>
+        <!-- Signup Form -->
+        <div id="signup-form" class="form-section active">
+            <form id="signupForm" onsubmit="return false;">
+                <input type="text" id="signup-name" placeholder="Enter Name">
+                <input type="email" id="signup-email" placeholder="Enter Email ID">
+<!--                <div class="phone-input">-->
+<!--                    <input type="text" class="country-code" value="+91" readonly>-->
+<!--                    <input type="tel" class="mobile-number" id="signup-mobile" placeholder="Mobile Number">-->
+<!--                </div>-->
+                <div class="terms">
+                    <input type="checkbox" id="terms-signup">
+                    <label for="terms-signup">By Agreeing to <a href="#">Terms & Conditions</a></label>
+                </div>
+                <button type="button" class="submit-btn" id="signup-send-otp">SEND OTP</button>
+                <div id="signup-otp-section" style="display:none; margin-top:15px;">
+                    <input type="text" id="signup-otp" placeholder="Enter OTP">
+                    <button type="button" class="submit-btn" id="signup-verify-otp" style="margin-top:10px;">VERIFY OTP</button>
+                    <div id="signup-otp-status" style="margin-top:10px;color:#d00;"></div>
+                </div>
+            </form>
+        </div>
+        <!-- Signin Form -->
+        <div id="signin-form" class="form-section">
+            <form id="signinForm" onsubmit="return false;">
+                <div id="mobile-login">
+                    <p style="font-size:1.2rem; margin-bottom:15px;">Login with Mobile</p>
+                    <div class="phone-input">
+                        <input type="text" class="country-code" value="+91" readonly>
+                        <input type="tel" class="mobile-number" id="signin-mobile" placeholder="Mobile Number">
+                    </div>
+                    <p class="alt-login" id="show-email-login">Login with Email ID instead</p>
+                </div>
+                <div id="email-login" style="display:none;">
+                    <p style="font-size:1.2rem; margin-bottom:15px;">Login with Email ID</p>
+                    <input type="email" id="signin-email" placeholder="Enter Email ID">
+                    <p class="alt-login" id="show-mobile-login">Login with Mobile instead</p>
+                </div>
+                <div class="terms">
+                    <input type="checkbox" id="terms-signin">
+                    <label for="terms-signin">By Agreeing to <a href="#">Terms & Conditions</a></label>
+                </div>
+                <button type="button" class="submit-btn" id="signin-send-otp">SEND OTP</button>
+                <div id="signin-otp-section" style="display:none; margin-top:15px;">
+                    <input type="text" id="signin-otp" placeholder="Enter OTP">
+                    <button type="button" class="submit-btn" id="signin-verify-otp" style="margin-top:10px;">VERIFY OTP</button>
+                    <div id="signin-otp-status" style="margin-top:10px;color:#d00;"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        const showSignupBtn = document.getElementById('show-signup');
+        const showSigninBtn = document.getElementById('show-signin');
+        const signupForm = document.getElementById('signup-form');
+        const signinForm = document.getElementById('signin-form');
+        const showEmailLogin = document.getElementById('show-email-login');
+        const showMobileLogin = document.getElementById('show-mobile-login');
+        const mobileLogin = document.getElementById('mobile-login');
+        const emailLogin = document.getElementById('email-login');
+
+        showSignupBtn.addEventListener('click', () => {
+            signupForm.classList.add('active');
+            signinForm.classList.remove('active');
+            showSignupBtn.classList.add('active');
+            showSigninBtn.classList.remove('active');
+        });
+
+        showSigninBtn.addEventListener('click', () => {
+            signinForm.classList.add('active');
+            signupForm.classList.remove('active');
+            showSigninBtn.classList.add('active');
+            showSignupBtn.classList.remove('active');
+        });
+        
+        showEmailLogin.addEventListener('click', () => {
+            mobileLogin.style.display = 'none';
+            emailLogin.style.display = 'block';
+        });
+
+        showMobileLogin.addEventListener('click', () => {
+            emailLogin.style.display = 'none';
+            mobileLogin.style.display = 'block';
+        });
+
+        //  SEND OTP using email
+        document.getElementById('signup-send-otp').onclick = async function () {
+            const email = document.getElementById('signup-email').value;
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                alert('Enter a valid email address');
+                return;
+            }
+
+            const res = await fetch('/otp/send?email=' + encodeURIComponent(email), {
+                method: 'POST'
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                document.getElementById('signup-otp-section').style.display = 'block';
+                document.getElementById('signup-otp-status').style.color = '#222';
+                if (data.isNewUser === 'true') {
+                    document.getElementById('signup-otp-status').textContent = 'OTP sent for signup! Check your email.';
+                } else {
+                    document.getElementById('signup-otp-status').textContent = 'User already exists! OTP sent for login.';
+                }
+            } else {
+                document.getElementById('signup-otp-status').textContent = 'Failed to send OTP: ' + data.status;
+            }
+        };
+
+        // ✅ VERIFY OTP using email (with name)
+        document.getElementById('signup-verify-otp').onclick = async function () {
+            const email = document.getElementById('signup-email').value;
+            const otp = document.getElementById('signup-otp').value;
+            const name = document.getElementById('signup-name').value;
+
+            const res = await fetch(
+                '/otp/verify?email=' + encodeURIComponent(email) +
+                '&otp=' + encodeURIComponent(otp) +
+                '&name=' + encodeURIComponent(name),
+                { method: 'POST' }
+            );
+
+            const data = await res.json();
+            if (data.status === 'OTP verified successfully') {
+                document.getElementById('signup-otp-status').style.color = 'green';
+                document.getElementById('signup-otp-status').textContent = data.message;
+            } else {
+                document.getElementById('signup-otp-status').style.color = '#d00';
+                document.getElementById('signup-otp-status').textContent = data.message || 'Invalid OTP.';
+            }
+        };
+
+
+        // OTP logic for Signin
+        document.getElementById('signin-send-otp').onclick = async function() {
+            const mobile = document.getElementById('signin-mobile').value;
+            if (!mobile.match(/^\d{10}$/)) {
+                alert('Enter a valid 10-digit mobile number');
+                return;
+            }
+            const res = await fetch('/otp/send?mobile=' + encodeURIComponent(mobile), { method: 'POST' });
+            const data = await res.json();
+            if (res.ok) {
+                document.getElementById('signin-otp-section').style.display = 'block';
+                if (data.isNewUser === 'true') {
+                    document.getElementById('signin-otp-status').textContent = 'New user! OTP sent for signup.';
+                } else {
+                    document.getElementById('signin-otp-status').textContent = 'OTP sent for login! Check server log.';
+                }
+            } else {
+                document.getElementById('signin-otp-status').textContent = 'Failed to send OTP: ' + data.status;
+            }
+        };
+        document.getElementById('signin-verify-otp').onclick = async function() {
+            const mobile = document.getElementById('signin-mobile').value;
+            const otp = document.getElementById('signin-otp').value;
+            const res = await fetch('/otp/verify?mobile=' + encodeURIComponent(mobile) + '&otp=' + encodeURIComponent(otp), { method: 'POST' });
+            const data = await res.json();
+            if (data.status === 'OTP verified successfully') {
+                document.getElementById('signin-otp-status').style.color = 'green';
+                document.getElementById('signin-otp-status').textContent = data.message;
+            } else {
+                document.getElementById('signin-otp-status').style.color = '#d00';
+                document.getElementById('signin-otp-status').textContent = data.message || 'Invalid OTP.';
+            }
+        };
+
+
+    </script>
+</body>
+</html> 

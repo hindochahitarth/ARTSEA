@@ -1,0 +1,105 @@
+<!-- header.html -->
+<div th:fragment="header">
+<!-- Desktop Navbar -->
+    <!-- Desktop Navbar -->
+    <nav class="navbar">
+        <div class="logo">ArtSea</div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;</button>
+        <div class="navbar-center">
+            <ul id="navbar-menu">
+                <li class="nav-item"><a href="#">AUCTIONS</a>
+                    <div class="dropdown">
+                        <a href="/auctions">Auction</a>
+                        <a href=" /auctions-result">Auction
+                            Results</a>
+                        <a href="/buy">Buy</a>
+                        <a href="/sell">Sell</a>
+                        <a href="/record-price-artwork">Record Price
+                            Artwork</a>
+                        <a href="/faqs">FAQs</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="#">SERVICES</a>
+                    <div class="dropdown">
+                        <a href="/private-services">Private Services</a>
+                        <a href="/storage-services">Storage Services</a>
+                        <!-- <a href="#">Restoration Services</a> -->
+                        <!-- <a href="#">Client Advisory Services</a> -->
+                        <a href="/collection-services">Collection Services</a>
+                        <!-- <a href="#">Museum Services</a> -->
+                        <a href="/post-sale-services">Post Sale Services</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="#">ABOUT US</a>
+                    <div class="dropdown">
+                        <a href="/who-we-are">Who We Are</a>
+                        <!-- <a href="#">Press</a> -->
+                        <!-- <a href="#">Career</a> -->
+                        <a href="/reach-us">Reach Us</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="#">LOGIN</a>
+                    <div class="dropdown">
+                        <a href="/login">Login</a>
+                        <a href="/signup">Signup</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <button>🔍</button>
+        </div>
+    </nav>
+
+<!-- Mobile Overlay Menu -->
+<div class="overlay-menu" id="overlay-menu">
+    <!-- your mobile menu HTML here -->
+    <div class="overlay-header">
+        <div class="overlay-logo">ArtSea</div>
+        <div class="overlay-dragbar"></div>
+        <button class="overlay-close" id="overlay-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="overlay-links">
+        <div class="overlay-link" data-submenu="auctions">
+            AUCTIONS <span class="plus">+</span>
+        </div>
+        <div class="overlay-sublinks" id="auctions">
+            <a href="/auctions" class="overlay-sublink">Auction</a>
+            <a href="/auctions-result" class="overlay-sublink">Auction Results</a>
+            <a href="/buy" class="overlay-sublink">Buy</a>
+            <a href="/sell" class="overlay-sublink">Sell</a>
+            <a href="/record-price-artwork" class="overlay-sublink">Record Price Artwork</a>
+            <a href="/faq" class="overlay-sublink">FAQs</a>
+        </div>
+
+        <div class="overlay-link" data-submenu="services">
+            SERVICES <span class="plus">+</span>
+        </div>
+        <div class="overlay-sublinks" id="services">
+            <a href="/private-services" class="overlay-sublink">Private Services</a>
+            <a href="/storage-services" class="overlay-sublink">Storage Services</a>
+            <!-- <a href="#" class="overlay-sublink">Restoration Services</a> -->
+            <!-- <a href="#" class="overlay-sublink">Client Advisory Services</a> -->
+            <a href="/collection-services" class="overlay-sublink">Collection Services</a>
+            <!-- <a href="#" class="overlay-sublink">Museum Services</a> -->
+            <a href="/post-sale-services" class="overlay-sublink">Post Sale Services</a>
+        </div>
+
+        <div class="overlay-link" data-submenu="about">
+            ABOUT US <span class="plus">+</span>
+        </div>
+        <div class="overlay-sublinks" id="about">
+            <a href="/who-we-are" class="overlay-sublink">Who We Are</a>
+            <!-- <a href="#" class="overlay-sublink">Press</a> -->
+            <!-- <a href="#" class="overlay-sublink">Career</a> -->
+            <a href="/reach-us" class="overlay-sublink">Reach Us</a>
+        </div>
+    </div>
+    <div style="flex:1 1 auto;"></div>
+    <div class="overlay-actions">
+        <button class="overlay-btn" onclick="window.location.href='/login'">Login</button>
+        <button class="overlay-btn" onclick="window.location.href='/signup'">Signup</button>
+    </div>
+</div>
+</div>
