@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSea Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles-admin.css">
+</head>
+
+<body>
+
+    <!-- Toggle Button -->
+    <button class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-shield-alt"></i> ArtSea Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a href="/admin-dashboard" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            <a href="/admin-verify-users"><i class="fas fa-users-cog"></i> <span>User Management</span></a>
+            <a href="/admin-manage-auction"><i class="fas fa-gavel"></i> <span>Auction Control</span></a>
+            <a href="/admin-manage-category"><i class="fas fa-swatchbook"></i> <span>Category Control</span></a>
+            <a href="/admin-manage-artwork"><i class="fas fa-palette"></i> <span>Artwork Control</span></a>
+<!--            <a href="#"><i class="fas fa-chart-line"></i> <span>Analytics</span></a>-->
+<!--            <a href="#"><i class="fas fa-money-bill-wave"></i> <span>Transactions</span></a>-->
+<!--            <a href="#"><i class="fas fa-flag"></i> <span>Reports</span></a>-->
+<!--            <a href="#"><i class="fas fa-cog"></i> <span>System Settings</span></a>-->
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="header">
+            <div class="dashboard-title">Admin Dashboard</div>
+            <div class="user-profile">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Admin">
+                <div class="user-info">
+                    <span class="user-name">Admin User</span>
+                    <span class="user-role">Super Administrator</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card blue">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Total Users</div>
+                        <div class="card-value">1,842</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 12% from last month</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card green">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Active Users</div>
+                        <div class="card-value">1,523</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 8% from last month</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card orange">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Pending Verification</div>
+                        <div class="card-value">87</div>
+                        <div class="card-footer"><i class="fas fa-arrow-down"></i> 15% from last week</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card red">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Banned Users</div>
+                        <div class="card-value">32</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 5 new this week</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card purple">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-hammer"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Live Auctions</div>
+                        <div class="card-value">142</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 23% from last week</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card teal">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Scheduled Auctions</div>
+                        <div class="card-value">56</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 12 new today</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card red">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Flagged Items</div>
+                        <div class="card-value">18</div>
+                        <div class="card-footer"><i class="fas fa-arrow-down"></i> 3 resolved today</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card dark">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Today's Revenue</div>
+                        <div class="card-value">$24,587</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 18% from yesterday</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card blue">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Total Transactions</div>
+                        <div class="card-value">3,842</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 15% from last week</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card orange">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Support Tickets</div>
+                        <div class="card-value">42</div>
+                        <div class="card-footer"><i class="fas fa-arrow-down"></i> 8 resolved today</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card green">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Premium Members</div>
+                        <div class="card-value">287</div>
+                        <div class="card-footer"><i class="fas fa-arrow-up"></i> 9% from last month</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card purple">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">System Health</div>
+                        <div class="card-value">98.7%</div>
+                        <div class="card-footer"><i class="fas fa-check-circle"></i> All systems normal</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("show");
+
+            // For desktop - toggle between collapsed and expanded
+            if (window.innerWidth > 768) {
+                sidebar.classList.toggle("collapsed");
+                document.querySelector('.main').style.marginLeft = sidebar.classList.contains('collapsed') ? '80px' : '260px';
+            }
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function (event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.menu-toggle');
+
+            if (window.innerWidth <= 768 && !sidebar.contains(event.target) && event.target !== toggleBtn) {
+                sidebar.classList.remove('show');
+            }
+        });
+
+        // Auto-collapse sidebar on smaller screens
+        function handleResize() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('collapsed');
+                document.querySelector('.main').style.marginLeft = '0';
+            } else {
+                sidebar.classList.remove('show');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initialize
+    </script>
+
+</body>
+
+</html>
