@@ -717,19 +717,22 @@
         </p>
         <button>SEE ALL UPCOMING AUCTIONS</button>
         <div class="auction-grid">
-            <div class="auction-card">
-                <img src="/auction_on_way_3.jpeg" alt="Iconic Masters">
-                <div>Iconic Masters</div>
-                <button>Explore</button>
-                <div class="date">29 Jul - 30 Jul, 2025<br><span class="status">Upcoming</span></div>
-            </div>
-            <div class="auction-card">
-                <img src="/auction_on_way_2.jpeg" alt="International Art Auction">
-                <div>International Art Auction</div>
-                <button>Show Interests</button>
-                <div class="date">August 2025<br><span class="status">Yet to be Announced</span></div>
-            </div>
+            <th:block th:each="auction : ${upcomingAuctions}">
+                <div class="auction-card">
+                    <img th:src="@{${auction.imageUrl}}" th:alt="${auction.auctionName}">
+                    <div th:text="${auction.auctionName}"></div>
+                    <button>Explore</button>
+                    <div class="date">
+                        <span th:text="${#temporals.format(auction.startTime, 'dd MMM')}"></span>
+                        -
+                        <span th:text="${#temporals.format(auction.endTime, 'dd MMM, yyyy')}"></span>
+                        <br>
+                        <span class="status">Upcoming</span>
+                    </div>
+                </div>
+            </th:block>
         </div>
+
     </section>
 
     <!-- RECENT AUCTIONS SECTION -->
