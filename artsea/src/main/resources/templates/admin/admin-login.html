@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSea Admin - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles-admin.css">
+    <style>
+        :root {
+            --primary: #2b2d42;
+            --primary-light: #404466;
+            --secondary: #1a1a2e;
+            --accent: #d90429;
+            --dark: #121219;
+            --light: #f8f9fa;
+            --success: #06d6a0;
+            --info: #118ab2;
+            --warning: #ffd166;
+            --danger: #ef476f;
+            --gray: #8d99ae;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f1f3f8;
+            color: var(--dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+
+        .btn-login {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-login:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(43, 45, 66, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-left">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>ArtSea Admin</h1>
+                </div>
+                <div class="welcome-text">
+                    <h2>Welcome Back!</h2>
+                    <p>Sign in to access the ArtSea administration dashboard and manage your platform.</p>
+                </div>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-users-cog"></i>
+                        <span>User Management</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics Dashboard</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-cog"></i>
+                        <span>Auction Management</span>
+                    </div>
+                </div>
+            </div>
+            <div class="login-right">
+                <div class="login-header">
+                    <h2>Admin Login</h2>
+                    <p>Enter your credentials to access the dashboard</p>
+                </div>
+                <form id="signinForm" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" class="form-control" placeholder="admin@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                    </div>
+<!--                    <div class="remember-forgot">-->
+<!--                        <div class="remember-me">-->
+<!--                            <input type="checkbox" id="remember">-->
+<!--                            <label for="remember">Remember me</label>-->
+<!--                        </div>-->
+<!--                        <a href="#" class="forgot-password">Forgot password?</a>-->
+<!--                    </div>-->
+                    <button type="submit" id="admin-signin" class="btn-login">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('admin-signin').onclick = async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                alert("Please enter both email and password");
+                return;
+            }
+
+            try {
+                // Using URLSearchParams to properly format the request
+                const formData = new URLSearchParams();
+                formData.append('email', email);
+                formData.append('password', password);
+                formData.append('userType', 'ADMIN'); // Explicitly set as ADMIN
+
+                const response = await fetch('/login', {  // Using your existing endpoint
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Verify the user is actually an ADMIN
+                    if (data.role === 'ADMIN') {
+                        window.location.href = "/admin-dashboard";
+                    } else {
+                        throw new Error('This account does not have admin privileges');
+                    }
+                } else {
+                    throw new Error(data.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Admin login error:', error);
+                alert(error.message || "Admin login failed. Please try again.");
+            }
+        };
+    </script>
+</body>
+</html>

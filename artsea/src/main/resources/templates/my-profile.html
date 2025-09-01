@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSea - My Profile</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional profile-specific styles only */
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 30px;
+            border: 3px solid #f5f5f5;
+        }
+
+        .profile-info h1 {
+            font-size: 2.2rem;
+            margin: 0 0 10px 0;
+            color: #222;
+        }
+
+        .profile-info p {
+            color: #666;
+            margin: 0 0 15px 0;
+            font-size: 1.1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #003366;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #888;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab-button.active {
+            color: #003366;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #003366;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        /* Bids Section */
+        .bids-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .bid-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .bid-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .bid-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .bid-details {
+            padding: 20px;
+        }
+
+        .bid-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            color: #222;
+        }
+
+        .bid-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .bid-amount {
+            font-weight: 600;
+            color: #003366;
+        }
+
+        .bid-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-winning {
+            background-color: #e6f7ee;
+            color: #00a85a;
+        }
+
+        .status-outbid {
+            background-color: #feeaea;
+            color: #f56565;
+        }
+
+        .status-closed {
+            background-color: #f5f5f5;
+            color: #888;
+        }
+
+        .bid-time {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Watchlist Section */
+        .watchlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .watchlist-item {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .watchlist-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .watchlist-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .watchlist-details {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+        }
+
+        .watchlist-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            color: #222;
+        }
+
+        .watchlist-price {
+            font-weight: 600;
+            color: #003366;
+            margin-bottom: 10px;
+        }
+
+        .watchlist-time {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .watchlist-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .watchlist-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-bid {
+            background: #003366;
+            color: #fff;
+        }
+
+        .btn-bid:hover {
+            background: #002244;
+        }
+
+        .btn-remove {
+            background: #f5f5f5;
+            color: #888;
+        }
+
+        .btn-remove:hover {
+            background: #eee;
+        }
+
+        /* Settings Section */
+        .settings-form {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            padding: 30px;
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-cancel {
+            padding: 12px 25px;
+            background: #f5f5f5;
+            color: #444;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            padding: 12px 25px;
+            background: #003366;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Responsive adjustments for profile page */
+        @media (max-width: 900px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .profile-stats {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .bids-grid,
+            .watchlist-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!--Navbar-->
+<div th:replace="header :: header"></div>
+
+
+
+<!-- Profile Content -->
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <img src="/woman.jpg" alt="Profile Avatar" class="profile-avatar">
+
+        <div class="profile-info">
+            <h1 th:text="${user.username}"></h1>
+            <p th:text="'Member since ' + ${#temporals.format(user.created_at, 'MMMM yyyy')}"></p>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Bids</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Won</div>
+                </div>
+<!--                <div class="stat-item">-->
+<!--                    <div class="stat-value">12</div>-->
+<!--                    <div class="stat-label">Watching</div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+        <button class="tab-button active" data-tab="bids">My Bids</button>
+<!--        <button class="tab-button" data-tab="watchlist">Watchlist</button>-->
+        <button class="tab-button" data-tab="settings">Account Settings</button>
+    </div>
+
+    <!-- Bids Tab -->
+    <div class="tab-content active" id="bids">
+        <h2 class="section-title">My Bids</h2>
+        <div class="bids-grid">
+            <!-- Sample Bid Items -->
+            <div class="bid-card">
+                <img src="https://via.placeholder.com/300x200?text=Modern+Art" alt="Artwork" class="bid-image">
+                <div class="bid-details">
+                    <h3 class="bid-title">Modern Abstract Painting</h3>
+                    <div class="bid-info">
+                        <span class="bid-amount">$1,250</span>
+                        <span class="bid-status status-winning">Winning</span>
+                    </div>
+                    <div class="bid-time">Ends in 2 days 4 hours</div>
+                </div>
+            </div>
+            <div class="bid-card">
+                <img src="https://via.placeholder.com/300x200?text=Vintage+Portrait" alt="Artwork" class="bid-image">
+                <div class="bid-details">
+                    <h3 class="bid-title">Vintage Portrait</h3>
+                    <div class="bid-info">
+                        <span class="bid-amount">$850</span>
+                        <span class="bid-status status-outbid">Outbid</span>
+                    </div>
+                    <div class="bid-time">Ends in 1 day 12 hours</div>
+                </div>
+            </div>
+            <div class="bid-card">
+                <img src="https://via.placeholder.com/300x200?text=Sculpture" alt="Artwork" class="bid-image">
+                <div class="bid-details">
+                    <h3 class="bid-title">Sculpture Bronze Figure</h3>
+                    <div class="bid-info">
+                        <span class="bid-amount">$2,100</span>
+                        <span class="bid-status status-closed">Closed</span>
+                    </div>
+                    <div class="bid-time">Ended 3 days ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--    &lt;!&ndash; Watchlist Tab &ndash;&gt;-->
+<!--    <div class="tab-content" id="watchlist">-->
+<!--        <h2 class="section-title">My Watchlist</h2>-->
+<!--        <div class="watchlist-grid">-->
+<!--            &lt;!&ndash; Sample Watchlist Items &ndash;&gt;-->
+<!--            <div class="watchlist-item">-->
+<!--                <img src="https://via.placeholder.com/300x200?text=Silver+Vase" alt="Watchlist Item" class="watchlist-image">-->
+<!--                <div class="watchlist-details">-->
+<!--                    <h3 class="watchlist-title">Antique Silver Vase</h3>-->
+<!--                    <div class="watchlist-price">Current bid: $450</div>-->
+<!--                    <div class="watchlist-time">Ends in 3 days 6 hours</div>-->
+<!--                    <div class="watchlist-actions">-->
+<!--                        <button class="watchlist-btn btn-bid">Bid Now</button>-->
+<!--                        <button class="watchlist-btn btn-remove">Remove</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="watchlist-item">-->
+<!--                <img src="https://via.placeholder.com/300x200?text=Art+Print" alt="Watchlist Item" class="watchlist-image">-->
+<!--                <div class="watchlist-details">-->
+<!--                    <h3 class="watchlist-title">Contemporary Art Print</h3>-->
+<!--                    <div class="watchlist-price">Current bid: $320</div>-->
+<!--                    <div class="watchlist-time">Ends in 1 day 18 hours</div>-->
+<!--                    <div class="watchlist-actions">-->
+<!--                        <button class="watchlist-btn btn-bid">Bid Now</button>-->
+<!--                        <button class="watchlist-btn btn-remove">Remove</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="watchlist-item">-->
+<!--                <img src="https://via.placeholder.com/300x200?text=Photography" alt="Watchlist Item" class="watchlist-image">-->
+<!--                <div class="watchlist-details">-->
+<!--                    <h3 class="watchlist-title">Rare Photography Collection</h3>-->
+<!--                    <div class="watchlist-price">Starting bid: $600</div>-->
+<!--                    <div class="watchlist-time">Starts in 2 days</div>-->
+<!--                    <div class="watchlist-actions">-->
+<!--                        <button class="watchlist-btn btn-bid">Notify Me</button>-->
+<!--                        <button class="watchlist-btn btn-remove">Remove</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- Settings Tab -->
+    <div class="tab-content" id="settings">
+        <h2 class="section-title">Account Settings</h2>
+        <form class="settings-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" value="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" value="john.doe@example.com">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" value="+1 (555) 123-4567">
+            </div>
+            <div class="form-group">
+                <label for="address">Shipping Address</label>
+                <textarea id="address">123 Main Street, Apt 4B
+New York, NY 10001
+United States</textarea>
+            </div>
+<!--            <div class="form-group">-->
+<!--                <label for="notifications">Notification Preferences</label>-->
+<!--                <select id="notifications">-->
+<!--                    <option selected>Email me about new auctions and bids</option>-->
+<!--                    <option>Only email me about winning bids</option>-->
+<!--                    <option>Don't send any notifications</option>-->
+<!--                </select>-->
+<!--            </div>-->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel">Cancel</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="footer :: footer"></div>
+
+<script src="/home.js"></script>
+<script>
+    // Tab functionality
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Add active class to clicked tab and corresponding content
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+</script>
+</body>
+
+</html>

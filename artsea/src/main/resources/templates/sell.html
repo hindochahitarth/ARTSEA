@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Artwork & Collectibles | ArtSea Auction House</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .sell-hero {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 70px;
+            overflow: hidden;
+        }
+
+        .sell-hero img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .sell-hero-content {
+            max-width: 800px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+        }
+
+        .sell-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #003366;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: #003366;
+            margin: 15px auto;
+        }
+
+        .intro-text {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .process-step {
+            flex: 1;
+            min-width: 250px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #003366;
+            position: relative;
+            text-align: center;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #003366;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .process-step img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .process-step h3 {
+            color: #003366;
+            margin: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .process-step p {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+
+        /* Two Column Layout */
+        .two-column {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+            margin: 60px 0;
+        }
+
+        .two-column .text-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .two-column .image-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .two-column img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            background: #003366;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #002244;
+        }
+
+        /* FAQ Section */
+        .faq-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .faq-accordion {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            background: #fff;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #222;
+            transition: all 0.2s;
+        }
+
+        .faq-question:hover {
+            background: #f5f5f5;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 25px 20px 25px;
+            max-height: 1000px;
+        }
+
+        .faq-answer-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sell-hero {
+                height: 300px;
+            }
+
+            .sell-hero h1 {
+                font-size: 2rem;
+            }
+
+            .process-steps {
+                flex-direction: column;
+            }
+
+            .two-column {
+                flex-direction: column;
+            }
+
+            .faq-question {
+                padding: 16px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sell-hero {
+                height: 250px;
+                margin-top: 60px;
+            }
+
+            .sell-hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .process-step {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!--Navbar    -->
+<div th:replace="header :: header"></div>
+
+    <!-- Hero Section -->
+    <section class="sell-hero">
+        <img src="/How_to_Sell.jpg" alt="Sell Artwork">
+        <div class="sell-hero-content">
+            <h1>Sell Your Artwork & Collectibles</h1>
+            <p>Trusted by collectors worldwide. Get the best value for your artwork through our expert auction services.
+            </p>
+        </div>
+    </section>
+
+    <!-- Intro Section -->
+    <section class="content-section">
+        <h2 class="section-title">Sell With ArtSea</h2>
+        <p class="intro-text">
+            <strong>Trusted by Collectors. Guided by Expertise</strong><br><br>
+            For over 15 years, ArtSea has been the destination of choice for connoisseurs, collectors, and cultural
+            custodians.
+            As India's premier auction house for rare art and collectibles, we offer a seamless and trusted platform
+            backed by
+            deep curatorial insight, proven market intelligence, and a global network of discerning buyers.
+        </p>
+
+        <p class="intro-text">
+            <strong>A Seamless Way to Sell Rare Art & Collectibles</strong><br><br>
+            Whether you're an artist, collector, or heir to a legacy, ArtSea provides an effortless and secure way to
+            sell your work.
+            From initial valuation and cataloguing to global presentation and post-sale services, we manage the entire
+            process with
+            precision, discretion, and a deep respect for your collection's significance.
+        </p>
+
+        <p class="intro-text">
+            <strong>Important Information for Sellers</strong><br><br>
+            To ensure the highest standard of service, please note the following:
+        </p>
+
+        <ul style="max-width: 800px; margin: 0 auto 40px; padding-left: 20px;">
+            <li>Valuations are conducted only for works that align with our upcoming auction programming.</li>
+            <li>Our commission and any pre-approved expenses will be deducted from the final hammer price.</li>
+            <li>Packing, shipping, and insurance are to be arranged by the consignor.</li>
+            <li>Services such as restoration, reframing, or presentation enhancements will be invoiced separately,
+                regardless of the auction outcome.</li>
+        </ul>
+    </section>
+
+    <!-- Process Steps Section -->
+    <!-- Process Steps Section -->
+    <section class="content-section" style="background-color: #f9f9f9; padding: 40px 20px; border-radius: 8px;">
+        <h2 class="section-title">It Works With 3 Easy Steps</h2>
+
+        <div class="process-steps">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <img src="/works-with-3-easy-steps_1.jpg"
+                    alt="Evaluation">
+                <h3>Evaluation</h3>
+                <p>Begin by contacting us via phone or email with images and key details of the piece you wish to sell.
+                </p>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <img src="/works-with-3-easy-steps_2.jpg"
+                    alt="Estimation">
+                <h3>Estimation</h3>
+                <p>We'll share a professionally researched estimate based on market trends and category insights.</p>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <img src="/works-with-3-easy-steps_3.jpg"
+                    alt="Auction & Shipping">
+                <h3>Auction & Shipping</h3>
+                <p>We coordinate shipping and present your piece to a global audience of collectors.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Get Estimate Section -->
+    <section class="content-section">
+        <div class="two-column">
+            <div class="text-content">
+                <h3 class="section-title" style="text-align: left; margin-bottom: 20px;">Sell With Us</h3>
+                <p>Curious about the value of your artwork or collectible—and how to present it to the right collectors?
+                    Submit your details for a complimentary, no-obligation review. If your piece aligns with our auction
+                    calendar, you'll receive a preliminary estimate within 5 to 7 business days.</p>
+                <a href="#" class="btn">GET AN ESTIMATE</a>
+            </div>
+            <div class="image-content">
+                <img src="/reachus.png" alt="Sell With Us">
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="content-section">
+        <div class="two-column">
+            <div class="text-content">
+                <h3 class="section-title" style="text-align: left; margin-bottom: 20px;">It's Effortless to Sell With
+                    ArtSea</h3>
+                <p>Watch this short video to discover how easy and rewarding it is to sell with ArtSea. From submitting
+                    your piece for evaluation to showcasing it at auction and receiving your proceeds—our expert-guided
+                    process is seamless, transparent, and designed to deliver the best results.</p>
+            </div>
+            <div class="image-content">
+                <img src="effortless-to-sell.jpg"
+                    alt="Selling Process Video">
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-container">
+        <h2 class="section-title">FAQs</h2>
+
+        <div class="faq-accordion">
+            <!-- FAQ Item 1 -->
+            <div class="faq-item">
+                <div class="faq-question">What happens after I submit my property?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Once your property is submitted and if our team finds fit for sale, we will dispatch a
+                            confirmation email. Our experts will then get in touch with you for scheduling pick-up. The
+                            property will be brought to the ArtSea office for a condition check by the restoration team.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-item">
+                <div class="faq-question">How long does it take to submit my property?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>The estimated time for collection of the property within Mumbai is 2 days, pan India within
+                            7-10 days, and international is 10-15 days.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-item">
+                <div class="faq-question">How far in advance of a sale must I submit my item?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>ArtSea recommends submitting your purchase at least 6-8 weeks prior to the Auction date.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-item">
+                <div class="faq-question">Is my estimate free of charge?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Yes, all our estimates are free of charge.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="faq-item">
+                <div class="faq-question">May I request an estimate if I'm not ready to sell?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Yes, we are happy to help with requests for estimates even if you decide to not sell your
+                            item.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="faq-item">
+                <div class="faq-question">How long does it take to receive an estimate?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>ArtSea's team will revert to you within 7-8 business days. If in any case, the item requires
+                            extra research then you will be informed about the status of your submission by our team.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 7 -->
+            <div class="faq-item">
+                <div class="faq-question">How is the Estimate Price determined?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>The Estimate Price is based on an average market value of the lot, determined at ArtSea's
+                            discretion. This Price is provided only as a guide for the Bidders. Bidders should not rely
+                            solely on the Estimate Price as a prediction of the price that the Lot may get sold at in
+                            any auction. The Estimate Price does not include the ArtSea Buyer's Margin, packing,
+                            insurance, shipping, handling charges and any other taxes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 8 -->
+            <div class="faq-item">
+                <div class="faq-question">What is an Estimate Price?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>The estimated price shall mean the estimates provided by ArtSea, at its discretion based on
+                            the average market value of the Lot.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 9 -->
+            <div class="faq-item">
+                <div class="faq-question">What information do I need to provide along with the item?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Images of the items from all angles, zoomed images of the signatures (if available),
+                            documents - proof of purchase/ proof of ownership, provenance detail (if any)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 10 -->
+            <div class="faq-item">
+                <div class="faq-question">How do I sell with ArtSea?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>You can upload your (artefact/property) information on the Green form with all the mandatory
+                            information and share it through email. If there is a scope for any of your properties to be
+                            part of ArtSea auctions, we will get back in touch with you.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Footer    -->
+    <div th:replace="footer :: footer"></div>
+
+<script src="/home.js"></script>
+
+    <script>
+        // Accordion functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+
+                // Close other open items
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <title>ArtSea - Live Artwork Lots</title>
+    <style>
+        /* Base Styles from home.html */
+
+        /* Auction Results Section Styles */
+        .auction-results-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .auction-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .auction-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .auction-title {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .auction-title {
+                margin-bottom: 0;
+                text-align: left;
+            }
+        }
+
+        .auction-tabs {
+            display: flex;
+            height: 50px;
+            border: 1px solid #c0c0c0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .auction-tab {
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 500;
+            background: white;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .auction-tab.active {
+            background: #003366;
+            color: white;
+        }
+
+        .auction-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 22px;
+            padding: 0 20px;
+        }
+
+        @media (min-width: 640px) {
+            .auction-grid {
+                grid-template-columns: repeat(3, 1fr);
+                padding: 0;
+            }
+        }
+
+        .auction-card {
+            max-width: 410px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #eee;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .auction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .live-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e53e3e;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .auction-image-container {
+            position: relative;
+            width: 100%;
+            height: 248px;
+            margin-bottom: 20px;
+        }
+
+        .auction-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .auction-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .auction-date {
+            font-size: 14px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .auction-time-left {
+            color: #e53e3e;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .current-bid {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .bid-amount {
+            font-weight: 600;
+            color: #003366;
+            font-size: 16px;
+        }
+
+        .next-bid {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .auction-divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 12px 0;
+        }
+
+        .bid-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .bid-btn {
+            background: #003366;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .bid-btn:hover {
+            background: #002244;
+        }
+
+        .bid-status {
+            font-size: 13px;
+            margin-top: 8px;
+            min-height: 18px;
+            text-align: center;
+        }
+
+        .bid-success {
+            color: #38a169;
+        }
+
+        .bid-error {
+            color: #e53e3e;
+        }
+
+        .bidders-count {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        /* Bid history panel */
+        .bid-history {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .bid-history-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .bid-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bidder-name {
+            color: #666;
+        }
+
+        .bid-value {
+            font-weight: 500;
+            color: #003366;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .auction-title {
+                font-size: 24px;
+            }
+
+            .auction-tabs {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .auction-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .auction-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!--Navbar    -->
+<div th:replace="header :: header"></div>
+<!-- Auction Results Content -->
+<div class="auction-results-container">
+    <div class="auction-header">
+        <h1 class="auction-title">Artwork Lots</h1>
+        <div class="auction-tabs">
+            <a href="/live-auctions" class="auction-tab active">LIVE AUCTIONS</a>
+            <a href="/upcoming-auctions" class="auction-tab">UPCOMING AUCTIONS</a>
+            <a href="/past-auctions" class="auction-tab">PAST AUCTIONS</a>
+        </div>
+    </div>
+
+    <div class="auction-grid">
+        <div class="auction-card" th:each="artworkData : ${artworks}">
+            <div class="auction-image-container">
+                <img th:src="@{${artworkData.artwork.imageUrl}}"
+                     th:alt="${artworkData.artwork.title}"
+                     class="auction-image">
+            </div>
+
+            <h4 class="auction-name" th:text="${artworkData.artwork.title}"></h4>
+<!--            <p class="auction-time-left">Ends in <span th:text="${auction.timeLeft}"></span></p>-->
+
+            <!-- Current and Next Bid -->
+            <p class="current-bid">
+                Current Bid: <span class="bid-amount"
+                                   th:text="'₹' + ${#numbers.formatDecimal(artworkData.currentBid, 0, 'COMMA', 2, 'POINT')}"></span>
+            </p>
+            <p class="next-bid"
+               th:text="'Next Bid: ₹' + ${#numbers.formatDecimal(artworkData.nextBid, 0, 'COMMA', 2, 'POINT')}
+                     + (${artworkData.currentBid == artworkData.artwork.startingPrice} ? ' (Be the first one)' : ' (10% higher)')">
+            </p>
+
+            <div class="bid-form">
+                <button class="bid-btn"
+                        th:text="'Bid ₹' + ${#numbers.formatDecimal(artworkData.nextBid, 0, 'COMMA', 2, 'POINT')}"
+                        th:onclick="'placeBid(' + ${artworkData.artwork.artworkId} + ',' + ${artworkData.nextBid} + ')'">
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--Footer    -->
+<div th:replace="footer :: footer"></div>
+<script src="/home.js"></script>
+
+<script>
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.auction-tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+
+            // Here you would typically load different content based on the selected tab
+            // For now, we'll just log which tab was clicked
+            console.log(tab.textContent + ' clicked');
+        });
+    });
+
+    // Bid placement functionality with 10% increment
+    function placeBid(artworkId, bidAmount) {
+        fetch(`/bid/${artworkId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ amount: bidAmount })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Bid placed successfully!');
+                    location.reload(); // Reload to update bids
+                } else {
+                    alert('Failed: ' + data.message);
+                }
+            })
+            .catch(err => alert('Error placing bid.'));
+    }
+
+    // Mobile menu functionality from home.html would go here
+    // ...
+</script>
+</body>
+</html>

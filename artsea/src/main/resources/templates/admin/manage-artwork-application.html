@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSea Admin - Artwork Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="styles-admin.css">
+    <style>
+        /* Use your existing styles from manage-category.html */
+        /* Add any auction-specific styles here */
+
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        .btn-add {
+            padding: 0.75rem 1.5rem;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #05b58b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 214, 160, 0.2);
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .categories-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .categories-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: var(--gray);
+            background: rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .categories-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            vertical-align: middle;
+        }
+
+        .categories-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .categories-table tr:hover {
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .category-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .category-name {
+            font-weight: 500;
+        }
+
+        .category-desc {
+            font-size: 0.9rem;
+            color: var(--gray);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: var(--info);
+        }
+
+        .btn-edit:hover {
+            background: #0f7aa5;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: #e03565;
+            transform: translateY(-2px);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .page-info {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .page-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-nav button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .page-nav button:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .page-nav button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .categories-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .table-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-upcoming {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ff9800;
+        }
+
+        .status-ongoing {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-completed {
+            background: rgba(158, 158, 158, 0.2);
+            color: #9e9e9e;
+        }
+
+        .btn-view {
+            background: var(--primary);
+        }
+
+        .btn-view:hover {
+            background: #3f51b5;
+            transform: translateY(-2px);
+        }
+        /* Auction Table Specific Styles */
+        .auctions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .auctions-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: var(--gray);
+            background: rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .auctions-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            vertical-align: middle;
+        }
+
+        .auctions-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .auctions-table tr:hover {
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .auction-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .auction-name {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<!-- Use your existing sidebar structure -->
+<!-- Toggle Button -->
+<button class="menu-toggle" onclick="toggleMenu(event)">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2 class="admin-title">ArtSea Admin</h2>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+        <a href="/admin-verify-users"><i class="fas fa-users-cog"></i> <span>User Management</span></a>
+        <a href="/admin-manage-auction"><i class="fas fa-gavel"></i> <span>Auction Control</span></a>
+        <a href="/admin-manage-category"><i class="fas fa-swatchbook"></i> <span>Category Control</span></a>
+        <a href="/admin-manage-artwork" class="active"><i class="fas fa-palette"></i> <span>Artwork Control</span></a>
+        <!--            <a href="#"><i class="fas fa-chart-line"></i> <span>Analytics</span></a>-->
+        <!--            <a href="#"><i class="fas fa-money-bill-wave"></i> <span>Transactions</span></a>-->
+        <!--            <a href="#"><i class="fas fa-flag"></i> <span>Reports</span></a>-->
+        <!--            <a href="#"><i class="fas fa-cog"></i> <span>System Settings</span></a>-->
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+    </div>
+</div>
+<div class="main">
+    <div class="page-header">
+        <div class="page-title">
+            <i class="fas fa-gavel"></i> Artwork Mangement
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-title">Artwork Applications</div>
+            <div class="table-actions">
+                <!--  Search -->
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search Artwork..." id="searchInput">
+                </div>
+
+                <!--  Status Filter -->
+                <div class="filter-box">
+                    <select id="statusFilter">
+                        <option value="">All</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="APPROVED">Approved</option>
+                        <option value="REJECTED">Rejected</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <table class="auctions-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Artwork Name</th>
+                <th>Auction Name</th>
+                <th>Starting Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="artwork : ${artworks}">
+                <td th:text="${artwork.artworkId}" class="auction-id">1</td>
+                <td th:text="${artwork.title}" class="auction-name">Summer Art Collection</td>
+                <td th:text="${artwork.auction.auctionName}" class="auction-name">Artist Name</td>
+                <td th:text="${artwork.startingPrice}" class="auction-name">Starting price</td>
+                <td th:text="${artwork.status}" class="auction-name status-cell">Auction Status</td>
+                <td>
+                    <div class="action-buttons">
+                        <!-- View button (always visible) -->
+                        <a th:href="@{'/admin-view-artwork/' + ${artwork.artworkId}}"
+                           class="btn-action btn-view" title="View">
+                            <i class="fas fa-eye"></i>
+                        </a>
+
+                        <!-- Accept & Reject buttons only if Pending -->
+                        <a th:if="${artwork.status == T(com.art.artsea.model.Artwork.ArtworkStatus).PENDING}"
+                           th:href="@{'/admin-accept-artwork/' + ${artwork.artworkId}}"
+                           class="btn-action btn-edit" title="Accept">
+                            <i class="fas fa-check"></i>
+                        </a>
+
+                        <a th:if="${artwork.status == T(com.art.artsea.model.Artwork.ArtworkStatus).PENDING}"
+                           href="#"
+                           class="btn-action btn-delete"
+                           title="Reject"
+                           data-bs-toggle="modal"
+                           th:attr="data-bs-target='#rejectModal-' + ${artwork.artworkId}">
+                            <i class="fas fa-times"></i>
+                        </a>
+
+
+
+                    </div>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <div class="page-info"></div>
+            <div class="page-nav"></div>
+        </div>
+    </div>
+</div>
+<!-- Reject Artwork Modal -->
+<div th:each="artwork : ${artworks}">
+    <div class="modal fade" th:id="'rejectModal-' + ${artwork.artworkId}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{'/admin-reject-artwork/' + ${artwork.artworkId}}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Reject Artwork</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Reason</label>
+                        <textarea name="rejectionReason" class="form-control" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rows = document.querySelectorAll('.auctions-table tbody tr');
+    const rowsPerPage = 5;
+    let currentPage = 1;
+
+    // --- Edit buttons ---
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const artworkId = row.querySelector('.artwork-id').textContent;
+            const artworkTitle = row.querySelector('.artwork-title').textContent;
+            const artworkStatus = row.querySelector('.status-cell').textContent;
+
+            console.log('Edit artwork:', {id: artworkId, title: artworkTitle, status: artworkStatus});
+            alert(`Edit artwork: ${artworkTitle} (ID: ${artworkId})`);
+        });
+    });
+
+    // --- Delete buttons ---
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const artworkId = row.querySelector('.artwork-id').textContent;
+            const artworkTitle = row.querySelector('.artwork-title').textContent;
+
+            if (confirm(`Are you sure you want to delete "${artworkTitle}" (ID: ${artworkId})?`)) {
+                console.log('Delete artwork:', {id: artworkId, title: artworkTitle});
+                row.remove();
+                alert('Artwork deleted successfully! (Demo only)');
+                renderTable(); // refresh pagination
+            }
+        });
+    });
+
+    // --- Search, filter, pagination ---
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const pageInfo = document.querySelector('.page-info');
+    const pageNav = document.querySelector('.page-nav');
+
+    function renderTable() {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
+        const statusValue = statusFilter.value.toLowerCase();
+
+        let filteredRows = Array.from(rows).filter(row => {
+            const text = row.textContent.toLowerCase();
+            const status = row.querySelector('.status-cell')?.textContent.toLowerCase();
+            const matchesSearch = !searchTerm || text.includes(searchTerm);
+            const matchesStatus = !statusValue || status === statusValue;
+            return matchesSearch && matchesStatus;
+        });
+
+        // Pagination setup
+        const totalRows = filteredRows.length;
+        const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        // Show rows
+        rows.forEach(row => row.style.display = "none");
+        filteredRows.slice(start, end).forEach(row => row.style.display = "");
+
+        // Update info
+        const showingStart = totalRows === 0 ? 0 : start + 1;
+        const showingEnd = Math.min(end, totalRows);
+        if (pageInfo) pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${totalRows} entries`;
+
+        // Pagination buttons
+        if (pageNav) {
+            pageNav.innerHTML = `
+                <button ${currentPage === 1 ? "disabled" : ""} data-page="${currentPage - 1}">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            for (let i = 1; i <= totalPages; i++) {
+                pageNav.innerHTML += `
+                    <button class="${i === currentPage ? "active" : ""}" data-page="${i}">${i}</button>
+                `;
+            }
+            pageNav.innerHTML += `
+                <button ${currentPage === totalPages ? "disabled" : ""} data-page="${currentPage + 1}">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+
+            pageNav.querySelectorAll("button[data-page]").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    currentPage = parseInt(btn.getAttribute("data-page"));
+                    renderTable();
+                });
+            });
+        }
+    }
+
+    // Listeners
+    if (searchInput) searchInput.addEventListener("input", () => { currentPage = 1; renderTable(); });
+    if (statusFilter) statusFilter.addEventListener("change", () => { currentPage = 1; renderTable(); });
+
+    // Initial render
+    renderTable();
+</script>
+<script src="/sidebar.js"></script>
+</body>
+</html>

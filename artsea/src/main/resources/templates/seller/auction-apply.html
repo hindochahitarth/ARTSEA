@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply to Auction | ArtSea</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles-seller.css}">
+    <style>
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        .form-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(43, 45, 66, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--white);
+        }
+
+        .image-preview {
+            width: 200px;
+            height: 200px;
+            border: 1px dashed var(--gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(43, 45, 66, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #7a8599;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Toggle Button -->
+<button class="menu-toggle" onclick="toggleMenu(event)">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2><i class="fas fa-palette"></i> ArtSea</h2>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/seller-dashboard" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+        <a href="/seller-upcoming-auctions" class="active"><i class="fas fa-gavel"></i> <span>Auctions</span></a>
+        <a href="/artwork-applications"><i class="fas fa-file-alt"></i> <span>Listing Status</span></a>
+<!--        <a href="#"><i class="fas fa-shopping-bag"></i> <span>Sales</span></a>-->
+<!--        <a href="#"><i class="fas fa-wallet"></i> <span>Payments</span></a>-->
+<!--        <a href="#"><i class="fas fa-envelope"></i> <span>Messages</span></a>-->
+<!--        <a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a>-->
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+    </div>
+</div>
+<div class="main">
+    <div class="header">
+        <div class="dashboard-title">Apply Auction</div>
+        <div class="user-profile">
+            <img th:src="@{/woman.jpg}" alt="User">
+            <div class="user-info">
+                <span class="user-name" th:if="${session.user != null}" th:text="${session.user.username}"></span>
+            </div>
+        </div>
+    </div>
+    <div class="page-header">
+        <div class="page-title">
+            <i class="fas fa-gavel"></i> Apply to Auction
+        </div>
+    </div>
+
+    <div class="form-container">
+        <!--/*@thymesVar id="artwork" type="com.art.artsea.model.Artwork"*/-->
+        <form th:action="@{/seller-auction-apply/{auctionId}(auctionId=${auctionId})}"
+              th:object="${artwork}"
+              method="post"
+              enctype="multipart/form-data">
+
+            <!-- Use th:field for proper binding -->
+            <div class="form-group">
+                <label for="title">Artwork Title *</label>
+                <input type="text" id="title" th:field="*{title}" class="form-control"
+                       placeholder="Enter artwork title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description" th:field="*{description}" class="form-control"
+                          placeholder="Describe the artwork..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Artwork Image *</label>
+                <input type="file" id="image" name="imageFile" class="form-control" accept="image/*" required>
+
+                <div class="image-preview" id="imagePreview">
+                    <span>Preview will appear here</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="artistName">Artist Name *</label>
+                <input type="text" id="artistName" th:field="*{artistName}" class="form-control"
+                       placeholder="Enter artist name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="startingPrice">Starting Price (₹) *</label>
+                <input type="number" id="startingPrice" th:field="*{startingPrice}"
+                       class="form-control"
+                       placeholder="Enter starting price" min="1" step="0.01" required>
+
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category *</label>
+                <select id="category" th:field="*{category.categoryId}" class="form-select" required>
+                    <option value="">Select a category</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.categoryId}"
+                            th:text="${category.name}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Submit Application
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+    // Image preview functionality
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('imagePreview');
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                preview.appendChild(img);
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            preview.innerHTML = '<span>Preview will appear here</span>';
+        }
+    });
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const startingPrice = parseFloat(document.getElementById('startingPrice').value);
+        if (startingPrice <= 0) {
+            e.preventDefault();
+            alert('Starting price must be greater than 0');
+        }
+    });
+</script>
+</body>
+</html>

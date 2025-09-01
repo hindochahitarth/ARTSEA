@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSea Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles-admin.css">
+</head>
+
+<body>
+
+    <!-- Toggle Button -->
+    <button class="menu-toggle" onclick="toggleMenu(event)">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-shield-alt"></i> ArtSea Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            <a href="/admin-verify-users" class="active"><i class="fas fa-users-cog"></i> <span>User Management</span></a>
+            <a href="/admin-manage-auction"><i class="fas fa-gavel"></i> <span>Auction Control</span></a>
+            <a href="/admin-manage-category"><i class="fas fa-swatchbook"></i> <span>Category Control</span></a>
+            <a href="/admin-manage-artwork"><i class="fas fa-palette"></i> <span>Artwork Control</span></a>
+            <!--            <a href="#"><i class="fas fa-chart-line"></i> <span>Analytics</span></a>-->
+            <!--            <a href="#"><i class="fas fa-money-bill-wave"></i> <span>Transactions</span></a>-->
+            <!--            <a href="#"><i class="fas fa-flag"></i> <span>Reports</span></a>-->
+            <!--            <a href="#"><i class="fas fa-cog"></i> <span>System Settings</span></a>-->
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="header">
+            <div class="dashboard-title">
+                <i class="fas fa-user-check"></i> User Verification
+            </div>
+<!--            <div class="user-profile">-->
+<!--                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Admin">-->
+<!--                <div class="user-info">-->
+<!--                    <span class="user-name">Admin User</span>-->
+<!--                    <span class="user-role">Super Administrator</span>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+
+        <div class="verification-container">
+            <div class="verification-header">
+                <div class="verification-title">
+                    Pending Verifications (<span th:text="${totalPending}"></span>)
+                </div>
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search users..." id="searchInput">
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="verification-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Registration Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}" th:if="${user.isVerified} == 0">
+                            <td>
+                                <div class="user-info">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="user-avatar">
+                                    <div class="user-details">
+                                        <span class="user-name" th:text="${user.username}"></span>
+                                        <span class="user-email" th:text="${user.email}"></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td th:text="${#temporals.format(user.created_at, 'yyyy-MM-dd')}"></td>
+                            <td><span class="verification-status status-pending">Pending</span></td>
+                            <td>
+                                <form th:action="@{/admin/verify-user}" method="post" style="display:inline;">
+                                    <input type="hidden" name="email" th:value="${user.email}" />
+                                    <button type="submit" class="btn btn-verify">
+                                        <i class="fas fa-check"></i> Verify
+                                    </button>
+                                </form>
+
+                                <form th:action="@{/admin/reject-user}" method="post" style="display:inline;">
+                                    <input type="hidden" name="email" th:value="${user.email}" />
+                                    <button type="submit" class="btn btn-reject">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <div class="page-info"></div>
+            <div class="page-nav"></div>
+        </div>
+    </div>
+    </div>
+
+    <script src="/sidebar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rows = document.querySelectorAll(".verification-table tbody tr");
+            const searchInput = document.getElementById("searchInput");
+            const pageInfo = document.querySelector(".pagination .page-info");
+            const pageNav = document.querySelector(".pagination .page-nav");
+
+            let currentPage = 1;
+            const rowsPerPage = 5; // change this if you want 10 per page
+
+            // Filter + paginate
+            function updateTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredRows = Array.from(rows).filter(row =>
+                    row.textContent.toLowerCase().includes(searchTerm)
+                );
+
+                const totalRows = filteredRows.length;
+                const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+                // Ensure current page is in range
+                if (currentPage > totalPages) currentPage = totalPages || 1;
+
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+
+                // Show only visible rows
+                rows.forEach(row => (row.style.display = "none"));
+                filteredRows.slice(start, end).forEach(row => (row.style.display = ""));
+
+                // Update info text
+                const showingStart = totalRows === 0 ? 0 : start + 1;
+                const showingEnd = Math.min(end, totalRows);
+                pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${totalRows} entries`;
+
+                // Build pagination buttons
+                pageNav.innerHTML = "";
+                if (totalPages > 1) {
+                    // Prev button
+                    const prevBtn = document.createElement("button");
+                    prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i>`;
+                    prevBtn.disabled = currentPage === 1;
+                    prevBtn.onclick = () => { currentPage--; updateTable(); };
+                    pageNav.appendChild(prevBtn);
+
+                    // Page numbers
+                    for (let i = 1; i <= totalPages; i++) {
+                        const btn = document.createElement("button");
+                        btn.textContent = i;
+                        if (i === currentPage) btn.classList.add("active");
+                        btn.onclick = () => { currentPage = i; updateTable(); };
+                        pageNav.appendChild(btn);
+                    }
+
+                    // Next button
+                    const nextBtn = document.createElement("button");
+                    nextBtn.innerHTML = `<i class="fas fa-chevron-right"></i>`;
+                    nextBtn.disabled = currentPage === totalPages;
+                    nextBtn.onclick = () => { currentPage++; updateTable(); };
+                    pageNav.appendChild(nextBtn);
+                }
+            }
+
+            // Search live filter
+            searchInput.addEventListener("input", () => {
+                currentPage = 1;
+                updateTable();
+            });
+
+            // Init first load
+            updateTable();
+        });
+    </script>
+
+</body>
+
+</html>

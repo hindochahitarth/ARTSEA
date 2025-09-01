@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSea - FAQs</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Reuse the same base styles from home.html */
+
+        /* FAQ Hero Section */
+        .faq-hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('/AstaGuru-FAQ.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 70px; /* Account for fixed navbar */
+        }
+
+        .faq-hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .faq-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .faq-hero p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* FAQ Content Section */
+        .faq-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .faq-intro {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .faq-intro p {
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-intro a {
+            color: #003366;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* FAQ Accordion */
+        .faq-accordion {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            background: #fff;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #222;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: #f9f9f9;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 30px 30px 30px;
+            max-height: 1000px;
+        }
+
+        .faq-answer-content {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .faq-answer-content ul {
+            padding-left: 20px;
+        }
+
+        .faq-answer-content li {
+            margin-bottom: 10px;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: #f9f9f9;
+            padding: 60px 0;
+            margin-top: 60px;
+        }
+
+        .contact-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .contact-container h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .contact-container p {
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+        }
+
+        .contact-btn {
+            background: #222;
+            color: #fff;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .contact-btn:hover {
+            background: #003366;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .faq-hero {
+                height: 300px;
+            }
+
+            .faq-hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .faq-hero p {
+                font-size: 1rem;
+            }
+
+            .faq-question {
+                padding: 20px;
+                font-size: 1.1rem;
+            }
+
+            .faq-answer {
+                padding: 0 20px;
+            }
+
+            .faq-item.active .faq-answer {
+                padding: 0 20px 20px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .faq-hero {
+                height: 250px;
+                margin-top: 60px;
+            }
+
+            .faq-hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .faq-question {
+                padding: 16px;
+                font-size: 1rem;
+            }
+
+            .faq-answer-content {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!--Navbar    -->
+<div th:replace="header :: header"></div>
+
+    <!-- FAQ Hero Section -->
+    <section class="faq-hero">
+        <div class="faq-hero-content">
+            <h1>FREQUENTLY ASKED QUESTIONS</h1>
+            <p>Find answers to common questions about our auctions, bidding process, selling with ArtSea, and more.</p>
+        </div>
+    </section>
+
+    <!-- FAQ Content Section -->
+    <div class="faq-container">
+        <div class="faq-intro">
+            <p>Need some help with your queries or got a burning question that you need to be answered pronto? Just click on one of the sections below to find the answer.</p>
+            <p>If you still can't find the answer to your question, please drop us an email at <a href="mailto:contact@artsea.com">contact@artsea.com</a>.</p>
+            <p>Our Team will be happy to help.</p>
+        </div>
+
+        <div class="faq-accordion">
+            <!-- FAQ Item 1 -->
+            <div class="faq-item">
+                <div class="faq-question">What are the applicable additional charges?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <ul>
+                            <li>All post sales charges are borne by the buyer, this includes packaging, insurance, shipping and handling charges.</li>
+                            <li>Shipping will be charged as per all the applicable parameters such as weight and distance.</li>
+                            <li>Lot winners can arrange for their lots to be handled at their own discretion, however all required formalities and documentation must be completed prior to taking possession.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-item">
+                <div class="faq-question">What are the various Duties & Taxes applicable?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p><strong>All applicable Duties & Taxes are borne by the Buyer.</strong><br><br>
+                        • All sales in India will attract GST ranging from 3% to 28% according to different categories.<br>
+                        • No GST applicable on International Sale.<br>
+                        • Import Duties if applicable are specified explicitly in the description section.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-item">
+                <div class="faq-question">Procedure in case goods/lots are damaged in transit</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Bidders are requested to inform ArtSea about any damage incurred while the goods/lots are being shipped. Intimation about the same must be communicated within 2 days of taking custody of the goods/lots. Any grievances after the stipulated timeframe will not have any validation as per ArtSea's liability and will be considered as a null and void claim.</p>
+                        <p>Please contact ArtSea for any further clarification.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-item">
+                <div class="faq-question">Why We Require a Refundable Deposit for Auction Bidding</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>At ArtSea, we are committed to providing a seamless and secure auction experience for all our participants. To ensure the integrity and smooth functioning of our auctions, we require a fully refundable deposit from everyone who wishes to participate.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="faq-item">
+                <div class="faq-question">Why We Collect a Deposit</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>The deposit serves several important purposes:</p>
+                        <ul>
+                            <li><strong>Security and Trust</strong>: It helps us maintain a trusted and secure auction environment. By collecting a deposit, we ensure that only serious bidders participate, which enhances the overall experience for all participants.</li>
+                            <li><strong>Smooth Auction Process</strong>: The deposit acts as a safeguard against non-genuine bids, ensuring that all bids placed are credible and that the auction process proceeds smoothly without disruptions.</li>
+                            <li><strong>Protection for Sellers and Buyers</strong>: It provides assurance to sellers that bidders are committed, which in turn protects the interests of all parties involved in the auction.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="faq-item">
+                <div class="faq-question">How the Deposit Works</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>We have structured our deposit system to be fair and straightforward:</p>
+                        <ul>
+                            <li><strong>Fully Refundable</strong>: Your deposit is fully refundable, whether or not you win the auction. If you do not place any bids or if your bids are unsuccessful, your deposit will be returned in full within 10 working days. If you win an item, your deposit will be applied towards your purchase.</li>
+                            <li><strong>Tiered Deposit Amounts</strong>: The deposit amount you need to pay is based on the bidding limit you require. This tiered structure ensures that the deposit is proportional to the potential value of the bids you intend to place.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 7 -->
+            <div class="faq-item">
+                <div class="faq-question">Deposit Tiers</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <ul>
+                            <li><strong>Up to Rs. 20,00,000 Bidding Limit</strong>: Rs. 2,00,000 deposit</li>
+                            <li><strong>Up to Rs. 30,00,000 Bidding Limit</strong>: Rs. 3,00,000 deposit</li>
+                            <li><strong>Up to Rs. 50,00,000 Bidding Limit</strong>: Rs. 5,00,000 deposit</li>
+                            <li><strong>Up to Rs. 1,00,00,000 and Bidding Limit</strong>: Rs. 10,00,000 deposit</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 8 -->
+            <div class="faq-item">
+                <div class="faq-question">How to Pay Your Deposit</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Participating in an ArtSea auction is simple:</p>
+                        <ul>
+                            <li><strong>Register or Log In</strong>: Create an account or log in to your existing account on ArtSea.</li>
+                            <li><strong>Choose Your Bidding Limit</strong>: Select the bidding limit you need for the auction.</li>
+                            <li><strong>Pay the Deposit</strong>: Follow the instructions to pay the corresponding deposit amount securely online. We request you to ideally pay the deposit at least 24 hours before the auction starts to get your bidding access well in time for the auction.</li>
+                            <li><strong>Start Bidding</strong>: Once your deposit is confirmed, you are ready to participate in the auction and place your bids with confidence.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 9 -->
+            <div class="faq-item">
+                <div class="faq-question">Join the ArtSea Community</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Your satisfaction and trust are our top priorities. The deposit system is designed to provide you with a secure and reliable auction experience. By participating in ArtSea auctions, you join a community of art and antique enthusiasts who appreciate the value and integrity of our process.</p>
+                        <p>We invite you to explore our upcoming auctions and take part in the excitement. If you have any questions or need assistance, our support team is always here to help.</p>
+                        <p><strong>Start your auction journey with ArtSea today—secure your spot by paying the deposit and enjoy the thrill of bidding on unique and valuable items!</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <h2>STILL HAVE QUESTIONS?</h2>
+            <p>If you didn't find what you were looking for, our team is ready to help. Contact us for more information about our auctions, services, or any other inquiries.</p>
+            <button class="contact-btn">CONTACT US</button>
+        </div>
+    </section>
+
+    <!--Footer    -->
+    <div th:replace="footer :: footer"></div>
+
+    <script src="/home.js"></script>
+    <script>
+        // Accordion functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+                
+                // Close other open items
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

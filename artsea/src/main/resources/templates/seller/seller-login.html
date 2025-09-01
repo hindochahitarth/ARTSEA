@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Login - ArtSea</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      padding: 30px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .logo {
+      font-size: 2.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .logo::after {
+      content: "SELLER PORTAL";
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      font-weight: normal;
+      color: #7f8c8d;
+      letter-spacing: 1px;
+    }
+    .toggle-form {
+      display: flex;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+    .toggle-form button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: #f5f5f5;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #7f8c8d;
+    }
+    .toggle-form button.active {
+      background: #3498db;
+      color: #fff;
+    }
+    .form-section {
+      display: none;
+    }
+    .form-section.active {
+      display: block;
+    }
+    .form-section input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border 0.3s;
+    }
+    .form-section input:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+    .terms {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      margin-bottom: 25px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .terms input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    .terms a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    .terms a:hover {
+      text-decoration: underline;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .submit-btn:hover {
+      background: #2980b9;
+    }
+    .alt-login {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #7f8c8d;
+    }
+    .form-header {
+      font-size: 1.2rem;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    .seller-benefits {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f1f9fe;
+      border-radius: 8px;
+      text-align: left;
+    }
+    .seller-benefits h3 {
+      color: #3498db;
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+    .seller-benefits ul {
+      padding-left: 20px;
+      margin-bottom: 0;
+    }
+    .seller-benefits li {
+      margin-bottom: 8px;
+      color: #34495e;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="logo" style="cursor:pointer;" onclick="window.location.href='/'">ArtSea</div>
+  <div class="toggle-form">
+    <button id="show-signup" class="active">SELLER SIGN UP</button>
+    <button id="show-signin">SELLER LOGIN</button>
+  </div>
+
+  <!-- Signup Form -->
+  <div id="signup-form" class="form-section active">
+    <div class="form-header">Create Your Seller Account</div>
+    <form id="signupForm" onsubmit="return false;">
+      <input type="text" id="signup-name" placeholder="Business Name">
+      <input type="email" id="signup-email" placeholder="Business Email">
+      <input type="password" id="signup-password" placeholder="Create Password">
+      <div class="terms">
+        <input type="checkbox" id="terms-signup">
+        <label for="terms-signup">I agree to the <a href="/terms-and-conditions" target="_blank">Seller Terms</a></label>
+      </div>
+      <button type="button" class="submit-btn" id="signup-send-otp">SEND VERIFICATION CODE</button>
+      <div id="signup-otp-section" style="display:none; margin-top:15px;">
+        <input type="text" id="signup-otp" placeholder="Enter Verification Code">
+        <button type="button" class="submit-btn" id="signup-verify-otp" style="margin-top:10px;">VERIFY & CREATE ACCOUNT</button>
+        <div id="signup-otp-status" style="margin-top:10px;color:#d00;"></div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Signin Form -->
+  <div id="signin-form" class="form-section">
+    <div class="form-header">Seller Login</div>
+    <form id="signinForm" onsubmit="return false;">
+      <input type="email" id="signin-email" placeholder="Business Email">
+      <input type="password" id="signin-password" placeholder="Password">
+      <div class="terms">
+        <input type="checkbox" id="remember-me">
+        <label for="remember-me">I accept T&c</label>
+        <span style="margin:0 5px;">•</span>
+        <a href="/seller-forgot-password">Forgot password?</a>
+      </div>
+      <button type="button" class="submit-btn" id="signin-send-otp">LOGIN TO SELLER DASHBOARD</button>
+    </form>
+
+<!--    <div class="alt-login">-->
+<!--      Need help? <a href="/seller-support">Contact Seller Support</a>-->
+<!--    </div>-->
+  </div>
+</div>
+
+<script>
+  const showSignupBtn = document.getElementById('show-signup');
+  const showSigninBtn = document.getElementById('show-signin');
+  const signupForm = document.getElementById('signup-form');
+  const signinForm = document.getElementById('signin-form');
+
+  showSignupBtn.addEventListener('click', () => {
+    signupForm.classList.add('active');
+    signinForm.classList.remove('active');
+    showSignupBtn.classList.add('active');
+    showSigninBtn.classList.remove('active');
+  });
+
+  showSigninBtn.addEventListener('click', () => {
+    signinForm.classList.add('active');
+    signupForm.classList.remove('active');
+    showSigninBtn.classList.add('active');
+    showSignupBtn.classList.remove('active');
+  });
+
+  // SEND OTP using email
+  document.getElementById('signup-send-otp').onclick = async function () {
+    const email = document.getElementById('signup-email').value;
+    const termsChecked = document.getElementById('terms-signup').checked;
+
+    if (!termsChecked) {
+      alert('Please agree to the Seller Terms before proceeding.');
+      return;
+    }
+
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      alert('Please enter a valid business email address');
+      return;
+    }
+
+    try {
+      const res = await fetch('/otp/send?email=' + encodeURIComponent(email) + '&userType=SELLER', {
+        method: 'POST'
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        document.getElementById('signup-otp-section').style.display = 'block';
+        document.getElementById('signup-otp-status').style.color = '#2c3e50';
+        if (data.isNewUser === 'true') {
+          document.getElementById('signup-otp-status').textContent = 'Verification code sent! Check your email.';
+        } else {
+          document.getElementById('signup-otp-status').textContent = 'Account already exists! Code sent for login.';
+        }
+      } else {
+        document.getElementById('signup-otp-status').textContent = 'Failed to send code: ' + data.status;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      document.getElementById('signup-otp-status').textContent = 'Error sending verification code';
+    }
+  };
+
+  document.getElementById('signup-verify-otp').onclick = async function() {
+    const email = document.getElementById('signup-email').value;
+    const otp = document.getElementById('signup-otp').value;
+    const name = document.getElementById('signup-name').value;
+    const password = document.getElementById('signup-password').value;
+
+    // Validation
+    if (!name.trim() || !password.trim() || !otp.trim()) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append('email', email);
+      formData.append('otp', otp);
+      formData.append('name', name);
+      formData.append('password', password);
+      formData.append('userType', 'SELLER');
+
+      const response = await fetch('/otp/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Seller verification failed');
+      }
+
+      const data = await response.json();
+
+      // Success handling
+      document.getElementById('signup-otp-status').style.color = 'green';
+      document.getElementById('signup-otp-status').textContent = 'Seller account verified! Redirecting...';
+
+      // Clear form fields manually (safer than .reset())
+      document.getElementById('signup-name').value = '';
+      document.getElementById('signup-email').value = '';
+      document.getElementById('signup-password').value = '';
+      document.getElementById('signup-otp').value = '';
+      document.getElementById('signup-otp-section').style.display = 'none';
+
+      // Switch to login tab after delay
+      setTimeout(() => {
+        showSigninBtn.click(); // Programmatically click the sign-in tab button
+        document.getElementById('signin-email').value = email; // Pre-fill email
+        document.getElementById('signin-password').focus(); // Focus on password field
+      }, 1500);
+
+    } catch (error) {
+      console.error('Seller verification error:', error);
+      document.getElementById('signup-otp-status').style.color = 'red';
+      document.getElementById('signup-otp-status').textContent = error.message || 'Seller verification failed. Please try again.';
+    }
+  };
+
+  document.getElementById('signin-send-otp').onclick = async function() {
+    const email = document.getElementById('signin-email').value;
+    const password = document.getElementById('signin-password').value;
+
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&userType=SELLER`
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        window.location.href = "/seller-dashboard";
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      alert("Network error. Please try again.");
+    }
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArtSea Seller Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles-seller.css">
+</head>
+<body>
+
+<!-- Toggle Button -->
+<button class="menu-toggle" onclick="toggleMenu(event)">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2><i class="fas fa-palette"></i> ArtSea</h2>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/seller-dashboard" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+        <a href="/seller-upcoming-auctions"><i class="fas fa-gavel"></i> <span>Auctions</span></a>
+        <a href="/artwork-applications"><i class="fas fa-file-alt"></i> <span>Listing Status</span></a>
+<!--        <a href="#"><i class="fas fa-shopping-bag"></i> <span>Sales</span></a>-->
+<!--        <a href="#"><i class="fas fa-wallet"></i> <span>Payments</span></a>-->
+<!--        <a href="#"><i class="fas fa-envelope"></i> <span>Messages</span></a>-->
+<!--        <a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a>-->
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+    <div class="header">
+        <div class="dashboard-title">Seller Dashboard</div>
+        <div class="user-profile">
+            <img src="woman.jpg" alt="User">
+            <div class="user-info">
+                <span class="user-name" th:if="${session.user != null}" th:text="${session.user.username}"></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="cards">
+        <div class="card blue">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <div>
+                    <div class="card-title">Live Auctions</div>
+                    <div class="card-value" th:text="${liveAuctions}"></div>
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 12% from last week</div>-->
+                </div>
+            </div>
+        </div>
+        
+        <div class="card green">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <div>
+                    <div class="card-title">Applied In Auctions</div>
+                    <div class="card-value" th:text="${appliedAuctions}"></div>
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 8% from last month</div>-->
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <div class="card red">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div>
+                    <div class="card-title">Closed Auctions</div>
+                    <div class="card-value" th:text="${pastAuctions}"></div>
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 23% from last month</div>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="card orange">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div>
+                    <div class="card-title">Future Auctions</div>
+                    <div class="card-value" th:text="${upcomingAuctions}"></div>
+                    <!--                    <div class="card-footer"><i class="fas fa-minus"></i> No change</div>-->
+                </div>
+            </div>
+        </div>
+        
+        <div class="card blue">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div>
+                    <div class="card-title">Live Artwork</div>
+                    <div class="card-value" th:text="${liveArtworks}"></div>
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 5% from last week</div>-->
+                </div>
+            </div>
+        </div>
+        
+        <div class="card teal">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div>
+                    <div class="card-title">Approved Artwork</div>
+                    <div class="card-value" th:text="${approvedArtworks}"></div>
+<!--                    <div class="card-footer"><i class="fas fa-arrow-down"></i> 2% from last month</div>-->
+                </div>
+            </div>
+        </div>
+        
+        <div class="card red">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div>
+                    <div class="card-title">Pending Artwork</div>
+                    <div class="card-value" th:text="${pendingArtworks}"></div>
+<!--                    <div class="card-footer"><i class="fas fa-check"></i> All verified</div>-->
+                </div>
+            </div>
+        </div>
+        
+        <div class="card purple">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div>
+                    <div class="card-title">Sold Artworks</div>
+                    <div class="card-value">0</div>
+<!--                    <div class="card-footer"><i class="fas fa-check"></i> No cancellations</div>-->
+                </div>
+            </div>
+        </div>
+        
+<!--        <div class="card blue">-->
+<!--            <div class="card-header">-->
+<!--                <div class="card-icon">-->
+<!--                    <i class="fas fa-lock"></i>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <div class="card-title">Sold Transactions</div>-->
+<!--                    <div class="card-value">150</div>-->
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 15% from last week</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        
+<!--        <div class="card orange">-->
+<!--            <div class="card-header">-->
+<!--                <div class="card-icon">-->
+<!--                    <i class="fas fa-box-open"></i>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <div class="card-title">Package Transactions</div>-->
+<!--                    <div class="card-value">28</div>-->
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 7% from last month</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        
+<!--        <div class="card green">-->
+<!--            <div class="card-header">-->
+<!--                <div class="card-icon">-->
+<!--                    <i class="fas fa-crown"></i>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <div class="card-title">Total Winners</div>-->
+<!--                    <div class="card-value">73</div>-->
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 9% from last month</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        
+<!--        <div class="card purple">-->
+<!--            <div class="card-header">-->
+<!--                <div class="card-icon">-->
+<!--                    <i class="fas fa-dollar-sign"></i>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <div class="card-title">Bid Transactions</div>-->
+<!--                    <div class="card-value">296</div>-->
+<!--                    <div class="card-footer"><i class="fas fa-arrow-up"></i> 18% from last week</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+    </div>
+</div>
+
+<script src="/sidebar.js"></script>
+
+</body>
+</html>

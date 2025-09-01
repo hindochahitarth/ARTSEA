@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Paintings Online India - Original Art Online in India | ArtSea</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Hero Section - matches sell page style with enhancements */
+        /* Hero Section */
+        .sell-hero {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 70px;
+            overflow: hidden;
+        }
+
+        .sell-hero img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .sell-hero-content {
+            max-width: 800px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+        }
+
+        .sell-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .sell-hero p {
+            font-size: 1.1rem;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .buy-hero {
+                height: 400px;
+            }
+
+            .buy-hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .buy-hero-content p {
+                font-size: 1.1rem;
+            }
+        }
+
+
+        @media (max-width: 480px) {
+            .sell-hero {
+                height: 250px;
+                margin-top: 60px;
+            }
+
+            .sell-hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Content Sections */
+        .content-section {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #003366;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: #003366;
+            margin: 15px auto;
+        }
+
+        .feature-box {
+            display: flex;
+            flex-direction: column;
+            /* Stack items vertically */
+            gap: 20px;
+            /* Add space between items */
+            margin-bottom: 40px;
+        }
+
+        .feature-item {
+            width: 100%;
+            /* Take full width */
+            margin-bottom: 0;
+            /* Remove bottom margin since we're using gap */
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #003366;
+            /* Add accent border */
+        }
+
+        .feature-item h3 {
+            color: #003366;
+            margin-top: 0;
+        }
+
+        /* FAQ Section */
+        .faq-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .faq-accordion {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            background: #fff;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #222;
+            transition: all 0.2s;
+        }
+
+        .faq-question:hover {
+            background: #f5f5f5;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 25px 20px 25px;
+            max-height: 1000px;
+        }
+
+        .faq-answer-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .faq-answer-content ul {
+            padding-left: 20px;
+        }
+
+        .faq-answer-content li {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sell-hero {
+                height: 300px;
+            }
+
+            .sell-hero h1 {
+                font-size: 2rem;
+            }
+
+            .feature-item {
+                flex: 0 0 100%;
+            }
+
+            .faq-question {
+                padding: 16px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--Navbar    -->
+    <div th:replace="header :: header"></div>
+
+
+    <!-- Hero Section -->
+    <section class="sell-hero">
+        <!-- <img src="https://cms-assets.astaguru.com/upload/05262025_122226_How_to_Sell.jpg" alt="Buy Art"> -->
+        <img src="/How_to_Sell.jpg" alt="Buy Art">
+        <div class="sell-hero-content">
+            <h1>Buy Original Art Online</h1>
+            <p>Discover and acquire exceptional modern and contemporary Indian artworks through our curated auctions and
+                private sales.</p>
+        </div>
+    </section>
+
+
+
+    <!-- Why ArtSea Section -->
+    <section class="content-section">
+        <h2 class="section-title">Why ArtSea</h2>
+        <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">As one of Mumbai's premium auction houses,
+            we offer collectors an opportunity to bid & buy modern and contemporary Indian paintings online. We aim to
+            provide every client with the best art buying experience possible!</p>
+
+        <div class="feature-box">
+            <div class="feature-item">
+                <h3>Year-Round Opportunities</h3>
+                <p>With round the year auctions encompassing our vast range of categories and private sales services,
+                    ArtSea provides you with multiple opportunities to buy with us.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Expert Specialists</h3>
+                <p>Each of our categories is represented by a team of specialists with in-depth market insights and
+                    years of experience.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Confident Bidding</h3>
+                <p>Our dedicated team of experts and our commitment to a research-based approach ensure that you can bid
+                    with the utmost confidence in our auctions.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Hassle-Free Experience</h3>
+                <p>We provide a quick and convenient bidding process in our auctions through our website, allowing you a
+                    seamless experience.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Process Section -->
+    <section class="content-section" style="background-color: #f9f9f9; padding: 40px 20px; border-radius: 8px;">
+        <h2 class="section-title">Our Process</h2>
+
+        <div class="feature-box">
+            <div class="feature-item">
+                <h3>Thorough Examination</h3>
+                <p>Our team of specialists thoroughly examine objects to ensure authenticity before making them
+                    available for auction.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Provenance Research</h3>
+                <p>We examine ownership history, supporting documentation, and relevant databases to allow for a smooth
+                    transfer of ownership.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Market Valuation</h3>
+                <p>We determine each item's market worth and establish an estimate range based on our expertise to
+                    provide you with insight while participating in live bidding.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Secure Transactions</h3>
+                <p>All transactions are processed securely with complete transparency about fees, taxes, and shipping
+                    arrangements.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+
+        <div class="faq-accordion">
+            <!-- FAQ Item 1 -->
+            <div class="faq-item">
+                <div class="faq-question">What are the applicable additional charges?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <ul>
+                            <li>All post sales charges are borne by the buyer, this includes packaging, insurance,
+                                shipping and handling charges.</li>
+                            <li>Shipping will be charged as per all the applicable parameters such as weight and
+                                distance.</li>
+                            <li>Lot winners can arrange for their lots to be handled at their own discretion, however
+                                all required formalities and documentation must be completed prior to taking possession.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-item">
+                <div class="faq-question">What are the various Duties & Taxes applicable?</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p><strong>All applicable Duties & Taxes are borne by the Buyer.</strong><br><br>
+                            • All sales in India will attract GST ranging from 3% to 28% according to different
+                            categories.<br>
+                            • No GST applicable on International Sale.<br>
+                            • Import Duties if applicable are specified explicitly in the description section.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-item">
+                <div class="faq-question">Procedure in case goods/lots are damaged in transit</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Bidders are requested to inform ArtSea about any damage incurred while the goods/lots are
+                            being shipped. Intimation about the same must be communicated within 2 days of taking
+                            custody of the goods/lots. Any grievances after the stipulated timeframe will not have any
+                            validation as per ArtSea's liability and will be considered as a null and void claim.</p>
+                        <p>Please contact ArtSea for any further clarification.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-item">
+                <div class="faq-question">Why We Require a Refundable Deposit for Auction Bidding</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>At ArtSea, we are committed to providing a seamless and secure auction experience for all our
+                            participants. To ensure the integrity and smooth functioning of our auctions, we require a
+                            fully refundable deposit from everyone who wishes to participate.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="faq-item">
+                <div class="faq-question">Why We Collect a Deposit</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>The deposit serves several important purposes:</p>
+                        <ul>
+                            <li><strong>Security and Trust</strong>: It helps us maintain a trusted and secure auction
+                                environment.</li>
+                            <li><strong>Smooth Auction Process</strong>: The deposit acts as a safeguard against
+                                non-genuine bids.</li>
+                            <li><strong>Protection for Sellers and Buyers</strong>: It provides assurance to sellers
+                                that bidders are committed.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="faq-item">
+                <div class="faq-question">How the Deposit Works</div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>We have structured our deposit system to be fair and straightforward:</p>
+                        <ul>
+                            <li><strong>Fully Refundable</strong>: Your deposit is fully refundable, whether or not you
+                                win the auction.</li>
+                            <li><strong>Tiered Deposit Amounts</strong>: The deposit amount is based on the bidding
+                                limit you require.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="footer :: footer"></div>
+    <script src="/home.js"></script>
+    <script>
+        // Accordion functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+
+                // Close other open items
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // // Mobile menu toggle
+        // const hamburger = document.getElementById('hamburger');
+        // const overlayMenu = document.getElementById('overlay-menu');
+        // const overlayClose = document.getElementById('overlay-close');
+        //
+        // hamburger.addEventListener('click', () => {
+        //     overlayMenu.classList.add('active');
+        //     document.body.style.overflow = 'hidden';
+        // });
+        //
+        // overlayClose.addEventListener('click', () => {
+        //     overlayMenu.classList.remove('active');
+        //     document.body.style.overflow = '';
+        // });
+        //
+        // overlayMenu.addEventListener('click', (e) => {
+        //     if (e.target === overlayMenu) {
+        //         overlayMenu.classList.remove('active');
+        //         document.body.style.overflow = '';
+        //     }
+        // });
+        //
+        // // Dropdown functionality for mobile menu
+        // document.querySelectorAll('.overlay-link').forEach(link => {
+        //     link.addEventListener('click', function () {
+        //         const submenuId = this.getAttribute('data-submenu');
+        //         if (!submenuId) return;
+        //
+        //         const submenu = document.getElementById(submenuId);
+        //         const plusIcon = this.querySelector('.plus');
+        //
+        //         this.classList.toggle('active');
+        //
+        //         if (submenu.style.display === 'flex') {
+        //             submenu.style.display = 'none';
+        //         } else {
+        //             submenu.style.display = 'flex';
+        //         }
+        //     });
+        // });
+    </script>
+</body>
+</html>

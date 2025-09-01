@@ -1,106 +1,42 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ArtSea - Home</title>
-        <style>
-            body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #fff;
-        }
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #fff;
-            padding: 0 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .navbar .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: #222;
-            padding: 20px 0;
-            flex: 0 0 auto;
-        }
-        .navbar-center {
-            flex: 1 1 auto;
-            display: flex;
-            justify-content: center;
-        }
-        .navbar ul {
-            list-style: none;
-            display: flex;
-                margin: 0;
-                padding: 0;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-        .navbar ul li {
-            position: relative;
-        }
-        .navbar ul li a {
-            display: block;
-            padding: 20px 18px;
-            color: #222;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .navbar ul li a:hover {
-            color: #003366;
-        }
-        .navbar .search-bar {
-            display: flex;
-            align-items: center;
-        }
-        .navbar .search-bar input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 20px 0 0 20px;
-            outline: none;
-            font-size: 1rem;
-        }
-        .navbar .search-bar button {
-            padding: 8px 16px;
-            border: none;
-            background: #222222;
-            color: #fff;
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        /* Dropdown styles */
-        .navbar ul li .dropdown {
-            display: none;
-            position: absolute;
-            background: #fff;
-            min-width: 180px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            top: 60px;
-            left: 0;
-            z-index: 10;
-        }
-        .navbar ul li:hover .dropdown {
-            display: block;
-        }
-        .navbar ul li .dropdown a {
-            padding: 12px 18px;
-            color: #222;
-            font-size: 1rem;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .navbar ul li .dropdown a:last-child {
-            border-bottom: none;
-        }
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <title>ArtSea - Home</title>
+    <style>
+        /* Base Styles */
+
+        /* Desktop Navbar */
+
+        /*.search-bar button {*/
+        /*    background: none;*/
+        /*    border: none;*/
+        /*    cursor: pointer;*/
+        /*    font-size: 1.1rem;*/
+        /*    margin-left: 5px;*/
+        /*    color: #555;*/
+        /*}*/
+
+        /* Mobile Navbar */
+
+
+        /* Overlay menu styles */
+
+        /*@keyframes fadeIn {*/
+        /*    from {*/
+        /*        opacity: 0;*/
+        /*    }*/
+
+        /*    to {*/
+        /*        opacity: 1;*/
+        /*    }*/
+        /*}*/
+
+
+
         /* Slider styles */
         .slider {
             position: relative;
@@ -108,47 +44,54 @@
             margin: 40px auto 0 auto;
             border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
+
         .slides {
             display: flex;
-            transition: transform 0.6s cubic-bezier(.77,0,.18,1);
+            transition: transform 0.6s cubic-bezier(.77, 0, .18, 1);
             width: 100%;
         }
+
         .slide {
             min-width: 100%;
             box-sizing: border-box;
             position: relative;
         }
+
         .slide img {
             width: 100%;
             display: block;
-            height: 480px;
+            height: 380px;
             object-fit: cover;
         }
+
         .slide-caption {
             position: absolute;
-            bottom: 40px;
-            left: 40px;
-            background: rgba(30,30,30,0.7);
+            bottom: 32px;
+            left: 32px;
+            background: rgba(30, 30, 30, 0.7);
             color: #fff;
-            padding: 28px 36px;
+            padding: 22px 28px;
             border-radius: 12px;
-            max-width: 400px;
+            max-width: 340px;
         }
+
         .slide-caption h2 {
             margin: 0 0 10px 0;
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
         }
+
         .slide-caption p {
-            margin: 0 0 18px 0;
-            font-size: 1.1rem;
+            margin: 0 0 12px 0;
+            font-size: 1rem;
         }
+
         .slide-caption .btn {
             background: #fff;
             color: #003366;
-            padding: 10px 22px;
+            padding: 8px 18px;
             border: none;
             border-radius: 6px;
             font-size: 1rem;
@@ -156,10 +99,12 @@
             cursor: pointer;
             text-decoration: none;
         }
+
         .slider-dots {
-                text-align: center;
-            margin: 18px 0 0 0;
+            text-align: center;
+            margin: 12px 0 0 0;
         }
+
         .slider-dots span {
             display: inline-block;
             width: 12px;
@@ -170,164 +115,132 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+
         .slider-dots .active {
             background: #003366;
         }
+
+        /* Auction Sections */
+        .section {
+            max-width: 1200px;
+            margin: 60px auto 0 auto;
+            padding: 0 20px;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+
+        .section p {
+            max-width: 700px;
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .section button {
+            background: #222222;
+            color: #fff;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 36px;
+            cursor: pointer;
+        }
+
+        .auction-grid {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin-top: 24px;
+        }
+
+        .auction-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            padding: 18px 18px 12px 18px;
+            width: 220px;
+            text-align: left;
+            border: 1px solid #eee;
+        }
+
+        .auction-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .auction-card div {
+            margin-top: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .auction-card button {
+            margin: 10px 0 0 0;
+            padding: 6px 18px;
+            background: #f5f4f0;
+            color: #222;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .auction-card .date {
+            font-size: 0.98rem;
+            color: #444;
+            margin-top: 10px;
+        }
+
+        .auction-card .status {
+            color: #888;
+        }
+
+        /* Footer */
+
+
+        /* Responsive Styles */
+
+
         @media (max-width: 900px) {
-            .slider { max-width: 98vw; }
-            .slide img { height: 260px; }
-            .slide-caption { left: 10px; bottom: 10px; padding: 16px 18px; }
-            .navbar {
-                flex-wrap: wrap;
-                padding: 0 10px;
-                position: relative;
-            }
-            .navbar .logo {
-                font-size: 2rem;
-                padding: 14px 0 14px 0;
-                z-index: 1101;
-            }
-            .navbar-center {
-                width: 100%;
-                order: 2;
-                justify-content: flex-start;
-            }
-            .navbar ul {
-                flex-direction: column;
-                width: 100vw;
-                display: none;
-                background: #fff;
-                position: absolute;
-                left: 0;
-                top: 60px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                z-index: 1100;
-                padding-bottom: 20px;
-            }
-            .navbar ul.show {
-                display: flex;
-            }
-            .navbar ul li {
-                width: 100%;
-            }
-            .navbar ul li a {
-                padding: 16px 18px;
-                font-size: 1.2rem;
-            }
-            .navbar ul li .dropdown {
-                position: static;
-                min-width: unset;
-                width: 100%;
-                box-shadow: none;
-                background: #f8f8f8;
-                display: none;
-                border-radius: 0 0 8px 8px;
-                margin-top: 0;
-            }
-            .navbar ul li.open > .dropdown {
-                display: block;
-            }
-            .navbar ul li .dropdown a {
-                font-size: 1.1rem;
-                padding: 14px 24px;
-                border-bottom: 1px solid #eee;
-            }
-            .navbar .search-bar {
-                width: 100%;
-                margin: 10px 0 10px 0;
-                justify-content: flex-end;
-            }
-            .navbar .hamburger {
-                display: block;
-                background: none;
-                border: none;
+
+            .section h2 {
                 font-size: 2.2rem;
-                cursor: pointer;
-                margin-left: auto;
-                margin-right: 10px;
-                z-index: 1102;
-            }
-            .navbar .search-bar input[type="text"] {
-                width: 70vw;
-            }
-            .footer-flex {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-            }
-            .footer-flex > div {
-                min-width: unset !important;
-                max-width: unset !important;
-                margin-bottom: 18px !important;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
             }
         }
+
         @media (max-width: 600px) {
-            .slide img { height: 160px; }
-            .slide-caption { font-size: 0.9rem; padding: 8px 10px; }
-            section, .slider { padding-left: 2vw; padding-right: 2vw; }
-            .navbar .logo { font-size: 1.4rem; }
-            .navbar ul li a { font-size: 1rem; }
+
+            .auction-grid {
+                justify-content: center;
             }
-        </style>
-    </head>
-    <body>
-    <nav class="navbar">
-        <div class="logo">ArtSea</div>
-        <button class="hamburger" id="hamburger" aria-label="Menu" style="display:none;">
-            &#9776;
-        </button>
-        <div class="navbar-center">
-            <ul id="navbar-menu">
-                <li class="nav-item"><a href="#">AUCTIONS</a>
-                    <div class="dropdown">
-                        <a href="#">Auction</a>
-                        <a href="#">Auction Results</a>
-                        <a href="#">Buy</a>
-                        <a href="#">Sell</a>
-                        <a href="#">Record Price Artwork</a>
-                        <a href="#">FAQs</a>
-                    </div>
-                </li>
-                <li class="nav-item"><a href="#">SERVICES</a>
-                    <div class="dropdown">
-                        <a href="#">Private Services</a>
-                        <a href="#">Storage Services</a>
-                        <a href="#">Restoration Services</a>
-                        <a href="#">Client Advisory Services</a>
-                        <a href="#">Collection Services</a>
-                        <a href="#">Museum Services</a>
-                        <a href="#">Post Sale Services</a>
-                    </div>
-                </li>
-                <li class="nav-item"><a href="#">ABOUT US</a>
-                    <div class="dropdown">
-                        <a href="#">Who We Are</a>
-                        <a href="#">Press</a>
-                        <a href="#">Career</a>
-                        <a href="#">Reach Us</a>
-                    </div>
-                </li>
-                <li class="nav-item"><a href="#">LOGIN</a>
-                    <div class="dropdown">
-                        <a href="#">Login</a>
-                        <a href="#">Signup</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
-            <button>🔍</button>
-        </div>
-    </nav>
+
+            .auction-card {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!--Navbar    -->
+    <div th:replace="header :: header"></div>
+
+    <!-- Slider Section -->
     <div class="slider" id="slider">
         <div class="slides" id="slides">
             <div class="slide">
-                <img src="/static/image1.jpeg" alt="Slide 1">
+                <img src="/image1.jpeg" alt="Slide 1">
                 <div class="slide-caption">
                     <h2>ICONIC MASTERS</h2>
                     <p>Modern Indian Art<br>29 Jul - 30 Jul, 2025</p>
@@ -335,7 +248,7 @@
                 </div>
             </div>
             <div class="slide">
-                <img src="/static/image2.jpeg" alt="Slide 2">
+                <img src="/image2.jpeg" alt="Slide 2">
                 <div class="slide-caption">
                     <h2>MODERN INDIAN ART</h2>
                     <p>Collectors Choice<br>26 Jun - 27 Jun, 2025</p>
@@ -343,7 +256,7 @@
                 </div>
             </div>
             <div class="slide">
-                <img src="/static/image3.jpeg" alt="Slide 3">
+                <img src="/image3.jpeg" alt="Slide 3">
                 <div class="slide-caption">
                     <h2>COLLECTORS CHOICE</h2>
                     <p>Modern Indian Art<br>26 Jun - 27 Jun, 2025</p>
@@ -353,171 +266,92 @@
         </div>
         <div class="slider-dots" id="slider-dots"></div>
     </div>
-    <!-- AUCTIONS ON THE WAY SECTION -->
-    <section style="max-width:1200px;margin:60px auto 0 auto;padding:0 20px;">
-        <h2 style="font-size:2.5rem;font-weight:800;letter-spacing:1px;margin-bottom:18px;">AUCTIONS ON THE WAY</h2>
-        <p style="max-width:700px;font-size:1.1rem;color:#444;line-height:1.7;margin-bottom:32px;">
-            Over the years, we have curated a wide range of online auctions in India, covering a diverse array of categories. Our portfolio boasts an impressive collection of Modern Indian Art from famous painters, exquisite vintage jewellery, fine silverware, rare timepieces, luxurious textiles, coveted celebrity memorabilia, rare books, numismatic treasures, philatelic gems, and even vintage cars. Take a look at the offerings in our upcoming online auctions.
-        </p>
-        <button style="background:#222222;color:#fff;padding:16px 36px;font-size:1.1rem;font-weight:600;border:none;border-radius:8px;margin-bottom:36px;cursor:pointer;">SEE ALL UPCOMING AUCTIONS</button>
-        <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:flex-start;margin-top:24px;">
-            <div style="background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:18px 18px 12px 18px;width:220px;text-align:left;border:1px solid #eee;">
-                <img src="/static/auction_on_way_3.jpeg" alt="Iconic Masters" style="width:100%;height:160px;object-fit:cover;border-radius:8px;">
-                <div style="margin-top:12px;font-weight:600;font-size:1.1rem;">Iconic Masters</div>
-                <button style="margin:10px 0 0 0;padding:6px 18px;background:#f5f4f0;color:#222;border:none;border-radius:6px;font-size:1rem;">Explore</button>
-                <div style="font-size:0.98rem;color:#444;margin-top:10px;">29 Jul - 30 Jul, 2025<br><span style="color:#888;">Upcoming</span></div>
-            </div>
-            <div style="background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:18px 18px 12px 18px;width:220px;text-align:left;border:1px solid #eee;">
-                <img src="/static/auction_on_way_2.jpeg" alt="International Art Auction" style="width:100%;height:160px;object-fit:cover;border-radius:8px;background:#111;">
-                <div style="margin-top:12px;font-weight:600;font-size:1.1rem;">International Art Auction</div>
-                <button style="margin:10px 0 0 0;padding:6px 18px;background:#f5f4f0;color:#222;border:none;border-radius:6px;font-size:1rem;">Show Interests</button>
-                <div style="font-size:0.98rem;color:#444;margin-top:10px;">August 2025<br><span style="color:#888;">Yet to be Announced</span></div>
-            </div>
-        </div>
-    </section>
-    <!-- RECENT AUCTIONS SECTION -->
-    <section style="max-width:1200px;margin:60px auto 0 auto;padding:0 20px;">
-        <h2 style="font-size:2.2rem;font-weight:800;letter-spacing:1px;margin-bottom:18px;">RECENT AUCTIONS</h2>
-        <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:flex-start;margin-top:24px;">
-            <div style="background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:18px 18px 12px 18px;width:220px;text-align:left;border:1px solid #eee;">
-                <img src="/static/auction_on_way_2.jpeg" alt="Collectors Choice" style="width:100%;height:160px;object-fit:cover;border-radius:8px;">
-                <div style="margin-top:12px;font-weight:600;font-size:1.1rem;">Collectors Choice</div>
-                <button style="margin:10px 0 0 0;padding:6px 18px;background:#f5f4f0;color:#222;border:none;border-radius:6px;font-size:1rem;">View Result</button>
-                <div style="font-size:0.98rem;color:#444;margin-top:10px;">26 Jun - 27 Jun, 2025</div>
-            </div>
-            <div style="background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:18px 18px 12px 18px;width:220px;text-align:left;border:1px solid #eee;">
-                <img src="/static/auction_on_way_2.jpeg" alt="Heirloom Collectibles" style="width:100%;height:160px;object-fit:cover;border-radius:8px;">
-                <div style="margin-top:12px;font-weight:600;font-size:1.1rem;">Heirloom Collectibles</div>
-                <button style="margin:10px 0 0 0;padding:6px 18px;background:#f5f4f0;color:#222;border:none;border-radius:6px;font-size:1rem;">View Result</button>
-                <div style="font-size:0.98rem;color:#444;margin-top:10px;">10 May - 11 May, 2025</div>
-            </div>
-            <div style="background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:18px 18px 12px 18px;width:220px;text-align:left;border:1px solid #eee;">
-                <img src="/static/auction_on_way_2.jpeg" alt="Present Future" style="width:100%;height:160px;object-fit:cover;border-radius:8px;">
-                <div style="margin-top:12px;font-weight:600;font-size:1.1rem;">Present Future</div>
-                <button style="margin:10px 0 0 0;padding:6px 18px;background:#f5f4f0;color:#222;border:none;border-radius:6px;font-size:1rem;">View Result</button>
-                <div style="font-size:0.98rem;color:#444;margin-top:10px;">7 May - 8 May, 2025</div>
-            </div>
-            <div style="background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:18px 18px 12px 18px;width:220px;text-align:left;border:1px solid #eee;">
-                <img src="/static/auction_on_way_2.jpeg" alt="Masters Legacy" style="width:100%;height:160px;object-fit:cover;border-radius:8px;">
-                <div style="margin-top:12px;font-weight:600;font-size:1.1rem;">Masters Legacy</div>
-                <button style="margin:10px 0 0 0;padding:6px 18px;background:#f5f4f0;color:#222;border:none;border-radius:6px;font-size:1rem;">View Result</button>
-                <div style="font-size:0.98rem;color:#444;margin-top:10px;">23 Apr - 24 Apr, 2025</div>
-            </div>
 
+    <!-- AUCTIONS ON THE WAY SECTION -->
+    <section class="section">
+        <h2>AUCTIONS ON THE WAY</h2>
+        <p>
+            Over the years, we have curated a wide range of online auctions in India, covering a diverse array of
+            categories. Our portfolio boasts an impressive collection of Modern Indian Art from famous painters,
+            exquisite vintage jewellery, fine silverware, rare timepieces, luxurious textiles, coveted celebrity
+            memorabilia, rare books, numismatic treasures, philatelic gems, and even vintage cars. Take a look at the
+            offerings in our upcoming online auctions.
+        </p>
+<!--        <button>SEE ALL UPCOMING AUCTIONS</button>-->
+        <button onclick="window.location.href='/upcoming-auctions'">SEE ALL UPCOMING AUCTIONS</button>
+        <div class="auction-grid">
+            <th:block th:each="auction : ${upcomingAuctions}">
+                <div class="auction-card">
+                    <img th:src="@{${auction.imageUrl}}" th:alt="${auction.auctionName}">
+                    <div th:text="${auction.auctionName}"></div>
+<!--                    <button>Explore</button>-->
+                    <div class="date">
+                        <span th:text="${#temporals.format(auction.startTime, 'dd MMM')}"></span>
+                        -
+                        <span th:text="${#temporals.format(auction.endTime, 'dd MMM, yyyy')}"></span>
+                        <br>
+                        <span class="status">Upcoming</span>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+    </section>
+
+    <!-- RECENT AUCTIONS SECTION -->
+    <section class="section">
+        <h2>RECENT AUCTIONS</h2>
+        <div class="auction-grid">
+            <th:block th:each="pastauction : ${pastAuctions}">
+            <div class="auction-card">
+                <img th:src="@{${pastauction.imageUrl}}" th:alt="${pastauction.auctionName}">
+                <div th:text="${pastauction.auctionName}"></div>
+
+                <div class="date">
+                    <span th:text="${#temporals.format(pastauction.startTime, 'dd MMM')}"></span>
+                    -
+                    <span th:text="${#temporals.format(pastauction.endTime, 'dd MMM, yyyy')}"></span>
+                    <br>
+                </div>
+                <button>View Result</button>
+            </div>
+            </th:block>
         </div>
     </section>
+
+    <div th:replace="footer :: footer"></div>
+    <script src="/home.js"></script>
+
     <script>
         // Simple slider logic
         const slides = document.getElementById('slides');
         const dotsContainer = document.getElementById('slider-dots');
         const slideCount = slides.children.length;
         let currentIndex = 0;
+
         function showSlide(index) {
             slides.style.transform = `translateX(-${index * 100}%)`;
             Array.from(dotsContainer.children).forEach((dot, i) => {
                 dot.className = i === index ? 'active' : '';
             });
         }
+
         // Create dots
         for (let i = 0; i < slideCount; i++) {
             const dot = document.createElement('span');
             dot.onclick = () => { currentIndex = i; showSlide(currentIndex); };
             dotsContainer.appendChild(dot);
         }
+
         showSlide(currentIndex);
+
         // Auto slide
         setInterval(() => {
             currentIndex = (currentIndex + 1) % slideCount;
             showSlide(currentIndex);
         }, 4000);
 
-        // Hamburger menu logic
-        const hamburger = document.getElementById('hamburger');
-        const navbarMenu = document.getElementById('navbar-menu');
-        function checkWidth() {
-            if(window.innerWidth <= 900) {
-                hamburger.style.display = 'block';
-                navbarMenu.classList.remove('show');
-            } else {
-                hamburger.style.display = 'none';
-                navbarMenu.classList.remove('show');
-                navbarMenu.style.display = '';
-            }
-        }
-        hamburger && hamburger.addEventListener('click', () => {
-            navbarMenu.classList.toggle('show');
-        });
-        window.addEventListener('resize', checkWidth);
-        window.addEventListener('DOMContentLoaded', checkWidth);
-
-        // Dropdown toggle for mobile
-        function isMobile() {
-            return window.innerWidth <= 900;
-        }
-        document.querySelectorAll('.nav-item > a').forEach(function(link) {
-            link.addEventListener('click', function(e) {
-                if (isMobile()) {
-                    e.preventDefault();
-                    const parent = link.parentElement;
-                    document.querySelectorAll('.nav-item').forEach(function(item) {
-                        if (item !== parent) item.classList.remove('open');
-                    });
-                    parent.classList.toggle('open');
-                }
-            });
-        });
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(e) {
-            if (isMobile()) {
-                const nav = document.querySelector('.navbar');
-                if (!nav.contains(e.target)) {
-                    document.querySelectorAll('.nav-item').forEach(function(item) {
-                        item.classList.remove('open');
-                    });
-                }
-            }
-        });
     </script>
-    <footer style="background:#fff;border-top:1.5px solid #eee;margin-top:60px;padding:40px 0 0 0;font-family:'Segoe UI',Arial,sans-serif;">
-        <div class="footer-flex" style="max-width:1300px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;padding:0 30px 30px 30px;">
-            <div style="min-width:220px;max-width:260px;margin-bottom:30px;">
-                <div style="font-size:2.5rem;font-weight:bold;letter-spacing:2px;color:#222;margin-bottom:18px;">ArtSea</div>
-                <div style="font-size:1.1rem;margin-bottom:10px;">DOWNLOAD THE APP</div>
-                <a href="#" style="display:block;margin-bottom:12px;"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" style="width:180px;"></a>
-                <a href="#" style="display:block;"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="width:180px;"></a>
-            </div>
-            <div style="display:flex;flex:1;justify-content:space-between;flex-wrap:wrap;min-width:600px;">
-                <div style="min-width:150px;margin-bottom:20px;">
-                    <div style="font-size:1.2rem;font-weight:500;margin-bottom:12px;letter-spacing:1px;">KNOW MORE</div>
-                    <div style="color:#888;font-size:1.05rem;line-height:2;">Buy<br>Sell<br>Request an Estimate<br>FAQs</div>
-                </div>
-                <div style="min-width:180px;margin-bottom:20px;">
-                    <div style="font-size:1.2rem;font-weight:500;margin-bottom:12px;letter-spacing:1px;">SERVICES</div>
-                    <div style="color:#888;font-size:1.05rem;line-height:2;">Client Advisory<br>Restoration<br>Collection Services<br>Museum Services<br>Post Sale Services<br>Private Sales<br>Storage</div>
-                </div>
-                <div style="min-width:150px;margin-bottom:20px;">
-                    <div style="font-size:1.2rem;font-weight:500;margin-bottom:12px;letter-spacing:1px;">ABOUT</div>
-                    <div style="color:#888;font-size:1.05rem;line-height:2;">Who we are<br>Press<br>Careers<br>Record Price Artwork</div>
-                </div>
-                <div style="min-width:180px;margin-bottom:20px;">
-                    <div style="font-size:1.2rem;font-weight:500;margin-bottom:12px;letter-spacing:1px;">FOLLOW US ON</div>
-                    <div style="display:flex;gap:12px;align-items:center;">
-                        <a href="#" style="display:inline-block;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width:28px;"></a>
-                        <a href="#" style="display:inline-block;"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram" style="width:28px;"></a>
-                        <a href="#" style="display:inline-block;"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width:28px;"></a>
-                        <a href="#" style="display:inline-block;"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="YouTube" style="width:28px;"></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom" style="border-top:1px solid #eee;margin-top:30px;padding:18px 30px 12px 30px;display:flex;justify-content:space-between;align-items:center;font-size:1.05rem;color:#444;max-width:1300px;margin-left:auto;margin-right:auto;">
-            <div>
-                <a href="#" style="color:#222;text-decoration:none;margin-right:18px;">Terms & Conditions</a>
-                <a href="#" style="color:#222;text-decoration:none;margin-right:18px;">Privacy Policy</a>
-                <a href="#" style="color:#222;text-decoration:none;">Cookie Policy</a>
-            </div>
-            <div style="color:#888;">ArtSea</div>
-        </div>
-    </footer>
-    </body>
-    </html>
+</body>
+
+</html>
