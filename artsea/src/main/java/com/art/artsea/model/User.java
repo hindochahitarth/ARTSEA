@@ -27,6 +27,9 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @Column(length=10)
+    private long phone;
+
     @Column(nullable = false, length = 255)
     private String password;
 
@@ -61,7 +64,13 @@ public class User {
     @Column(name = "is_verified", nullable = false)
     private int isVerified=0;
 
+    public long getPhone() {
+        return phone;
+    }
 
+    public void setPhone(long phone) {
+        this.phone = phone;
+    }
 
     public int getIsVerified() {
         return isVerified;

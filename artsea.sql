@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 01, 2025 at 10:13 AM
+-- Generation Time: Sep 15, 2025 at 05:43 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -89,6 +89,24 @@ CREATE TABLE `categories` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `order_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `bid_id` bigint(20) NOT NULL,
+  `amount` double DEFAULT NULL,
+  `order_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `payment_id` varchar(100) DEFAULT NULL,
+  `delivery_address` varchar(1000) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `tracking_id` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -96,6 +114,7 @@ CREATE TABLE `users` (
   `user_id` bigint(20) NOT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `phone` bigint(20) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('ADMIN','SELLER','BUYER') DEFAULT 'BUYER',
   `created_at` datetime DEFAULT current_timestamp(),
@@ -137,6 +156,14 @@ ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`order_id`),
+  ADD KEY `fk_orders_user` (`user_id`),
+  ADD KEY `fk_orders_bid` (`bid_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -172,6 +199,12 @@ ALTER TABLE `categories`
   MODIFY `category_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `order_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -195,6 +228,13 @@ ALTER TABLE `artworks`
 ALTER TABLE `bids`
   ADD CONSTRAINT `fk_artwork` FOREIGN KEY (`artwork_id`) REFERENCES `artworks` (`artwork_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `fk_orders_bid` FOREIGN KEY (`bid_id`) REFERENCES `bids` (`bid_id`),
+  ADD CONSTRAINT `fk_orders_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
