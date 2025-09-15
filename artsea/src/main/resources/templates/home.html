@@ -298,6 +298,30 @@
 
     </section>
 
+    <!-- LIVE AUCTIONS SECTION -->
+    <section class="section" th:if="${liveAuctions != null and !liveAuctions.isEmpty()}">
+        <h2>LIVE AUCTIONS</h2>
+        <div class="auction-grid">
+            <th:block th:each="auction : ${liveAuctions}">
+                <div class="auction-card">
+                    <img th:src="@{${auction.imageUrl}}" th:alt="${auction.auctionName}">
+                    <div th:text="${auction.auctionName}"></div>
+                    <div class="date">
+                        <span th:text="${#temporals.format(auction.startTime, 'dd MMM')}"></span>
+                        -
+                        <span th:text="${#temporals.format(auction.endTime, 'dd MMM, yyyy')}"></span>
+                        <br>
+                        <span class="status" style="color:red; font-weight:bold;">LIVE</span>
+                    </div>
+                    <button th:onclick="'window.location.href=\'/live-auction/' + ${auction.auctionId} + '\';'">
+                        Enter Auction
+                    </button>
+                </div>
+            </th:block>
+        </div>
+    </section>
+
+
     <!-- RECENT AUCTIONS SECTION -->
     <section class="section">
         <h2>RECENT AUCTIONS</h2>

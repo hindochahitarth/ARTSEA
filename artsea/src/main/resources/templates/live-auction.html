@@ -397,13 +397,17 @@
     let stompClient = null;
 
     // Helper: update button to 10% higher than current bid
-    function updateNextBidButton(card, currentBid, startingPrice) {
+    function updateNextBidButton(card, currentBid, startingPrice, hasBids = false) {
         const btn = card.querySelector(".bid-btn");
 
-        // If currentBid equals starting price, show starting price, else 10% higher
-        const nextBid = (currentBid === startingPrice)
-            ? currentBid
-            : currentBid * 1.1;
+        let nextBid;
+        if (!hasBids && currentBid === startingPrice) {
+            // First bid: allow same as starting price
+            nextBid = startingPrice;
+        } else {
+            // Subsequent bids: 10% increment
+            nextBid = currentBid * 1.1;
+        }
 
         btn.textContent = "Bid ₹" + nextBid.toFixed(2);
         btn.setAttribute("data-next-bid", nextBid.toFixed(2));
@@ -416,8 +420,12 @@
     document.querySelectorAll(".auction-card").forEach(card => {
         const currentBid = parseFloat(card.querySelector(".bid-btn").getAttribute("data-current-bid"));
         const startingPrice = parseFloat(card.querySelector(".bid-btn").getAttribute("data-starting-price"));
-        updateNextBidButton(card, currentBid, startingPrice);
+        const highestBidder = card.querySelector(".highest-bidder-name").textContent.trim();
+
+        const hasBids = highestBidder && highestBidder !== "No bids yet";
+        updateNextBidButton(card, currentBid, startingPrice, hasBids);
     });
+
 
 
     // Connect WebSocket
@@ -432,17 +440,19 @@
                 stompClient.subscribe(`/topic/auction/${artworkId}`, function (message) {
                     const bid = JSON.parse(message.body);
                     const currentBid = parseFloat(bid.bidAmount.toString().replace(/[^\d.]/g, ''));
+                    const startingPrice = parseFloat(card.querySelector(".bid-btn").getAttribute("data-starting-price"));
 
                     // Update UI
                     card.querySelector(".bid-amount").textContent = "₹" + currentBid.toFixed(2);
-                    updateNextBidButton(card, currentBid);
+
+                    // Now always true because we know at least one bid exists
+                    updateNextBidButton(card, currentBid, startingPrice, true);
 
                     // Update highest bidder name
                     const highestBidderElem = card.querySelector(".highest-bidder-name");
                     if (highestBidderElem) {
                         highestBidderElem.textContent = bid.bidderName || 'No bids yet';
                     }
-
                 });
             });
         });

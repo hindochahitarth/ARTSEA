@@ -23,10 +23,8 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class PageController {
@@ -51,11 +49,15 @@ public class PageController {
     @GetMapping("/")
     public String showHome(Model model) {
 
+        List<Auction> liveAuctions = auctionService.getLiveAuctions();
+        model.addAttribute("liveAuctions", liveAuctions);
+
         List<Auction> upcomingAuctions = auctionService.getUpcomingAuctions();
         model.addAttribute("upcomingAuctions", upcomingAuctions);
 
-        List<Auction> pastAuctions=auctionService.getPastAuctions();
+        List<Auction> pastAuctions = auctionService.getPastAuctions();
         model.addAttribute("pastAuctions", pastAuctions);
+
         return "home";
     }
 
@@ -78,15 +80,21 @@ public class PageController {
             LocalDateTime now = LocalDateTime.now();
 
             // ------------------ Fetch Live Auction Bids ------------------
-            List<Bid> myBids = bidService.getBidsByUser(loggedInUser.getUserId()).stream()
+            Map<Long, Bid> latestBidsByArtwork = bidService.getBidsByUser(loggedInUser.getUserId()).stream()
                     .filter(bid -> {
                         Artwork artwork = bid.getArtwork();
                         Auction auction = artwork.getAuction();
+                        // only include ongoing auctions
                         return auction.getStartTime().isBefore(now) && auction.getEndTime().isAfter(now);
                     })
-                    .toList();
+                    .collect(Collectors.toMap(
+                            bid -> bid.getArtwork().getArtworkId(),
+                            bid -> bid,
+                            // if multiple bids by same user for same artwork → keep the latest one
+                            (bid1, bid2) -> bid1.getBidTime().isAfter(bid2.getBidTime()) ? bid1 : bid2
+                    ));
 
-            List<Map<String, Object>> bidsData = myBids.stream().map(bid -> {
+            List<Map<String, Object>> bidsData = latestBidsByArtwork.values().stream().map(bid -> {
                 Map<String, Object> data = new HashMap<>();
                 Artwork artwork = bid.getArtwork();
                 Auction auction = artwork.getAuction();
@@ -106,6 +114,33 @@ public class PageController {
 
             model.addAttribute("bidsData", bidsData);
 
+            // ------------------ All Bids (history, DESC) ------------------
+            List<Map<String, Object>> allBids = bidService.getBidsByUser(loggedInUser.getUserId()).stream()
+                    .sorted(Comparator.comparing(Bid::getBidTime).reversed()) // latest first
+                    .map(bid -> {
+                        Map<String, Object> data = new HashMap<>();
+                        Artwork artwork = bid.getArtwork();
+                        Auction auction = artwork.getAuction();
+
+                        double currentHighestBid = bidService.getHighestBidAmountForArtwork(artwork.getArtworkId())
+                                .orElse(artwork.getStartingPrice());
+
+                        boolean isWinning = bid.getBidAmount().doubleValue() == currentHighestBid;
+
+                        data.put("artwork", artwork);
+                        data.put("userBid", bid.getBidAmount());
+                        data.put("status", isWinning ? "Winning" : "Outbid");
+                        data.put("auction", auction);
+                        data.put("bidTime", bid.getBidTime()); // helpful for UI
+
+                        return data;
+                    })
+                    .toList();
+
+            model.addAttribute("allBids", allBids);
+
+
+
             // ------------------ Pending Payments (won auctions) ------------------
             List<Map<String, Object>> pendingPayments = bidService.getBidsByUser(loggedInUser.getUserId()).stream()
                     .filter(bid -> {
@@ -121,7 +156,11 @@ public class PageController {
                         // Check if payment already done
                         boolean paymentPending = orderRepository.findByBid_BidId(bid.getBidId())
                                 .stream()
-                                .noneMatch(order -> "SUCCESS".equalsIgnoreCase(order.getStatus())); // or check "PAID" if you update status after payment
+                                .noneMatch(order ->
+                                        "SUCCESS".equalsIgnoreCase(order.getStatus()) ||
+                                                "PROCESSED".equalsIgnoreCase(order.getStatus())
+                                );
+
 
                         return auctionEnded && isWinningBid && paymentPending;
                     })
@@ -150,6 +189,16 @@ public class PageController {
                         return data;
                     })
                     .toList();
+
+            // Total number of bids
+            long totalBids = bidService.getBidsByUser(loggedInUser.getUserId()).size();
+
+            // Total number of won auctions (paid orders)
+            long totalWon = wonOrders.size();
+
+            model.addAttribute("totalBids", totalBids);
+            model.addAttribute("totalWon", totalWon);
+
 
             model.addAttribute("wonOrders", wonOrders);
             model.addAttribute("pendingPayments", pendingPayments);

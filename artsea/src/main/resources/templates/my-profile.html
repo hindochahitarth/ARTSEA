@@ -510,20 +510,22 @@
                 <p th:text="'Member since ' + ${#temporals.format(user.created_at, 'MMMM yyyy')}"></p>
                 <div class="profile-stats">
                     <div class="stat-item">
-                        <div class="stat-value">24</div>
+                        <div class="stat-value" th:text="${totalBids}"></div>
                         <div class="stat-label">Bids</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">8</div>
+                        <div class="stat-value" th:text="${totalWon}"></div>
                         <div class="stat-label">Won</div>
                     </div>
                 </div>
+
             </div>
         </div>
 
         <!-- Profile Tabs -->
         <div class="profile-tabs">
-            <button class="tab-button active" data-tab="bids">My Bids</button>
+            <button class="tab-button active" data-tab="bids">Live Auction Bids</button>
+            <button class="tab-button" data-tab="all-bids">All Bids</button>
             <button class="tab-button" data-tab="won-artwork">Won Artwork</button>
             <button class="tab-button" data-tab="pending-payment">Pending Payment</button>
             <button class="tab-button" data-tab="settings">Account Settings</button>
@@ -531,7 +533,7 @@
 
         <!-- Bids Tab -->
         <div class="tab-content active" id="bids">
-            <h2 class="section-title">My Bids</h2>
+            <h2 class="section-title">Live Auction Bids</h2>
             <div class="bids-grid">
                 <div class="bid-card" th:each="bidData : ${bidsData}">
                     <img th:src="@{${bidData.artwork.imageUrl}}" th:alt="${bidData.artwork.title}" class="bid-image">
@@ -549,6 +551,32 @@
                 </div>
             </div>
         </div>
+        <!-- All Bids Tab -->
+        <div class="tab-content" id="all-bids">
+            <h2 class="section-title">Bids History</h2>
+            <div class="bids-grid">
+                <div class="bid-card" th:each="bidData : ${allBids}">
+                    <img th:src="@{${bidData.artwork.imageUrl}}"
+                         th:alt="${bidData.artwork.title}"
+                         class="bid-image">
+
+                    <div class="bid-details">
+                        <h3 class="bid-title" th:text="${bidData.artwork.title}"></h3>
+                        <div class="bid-info">
+                    <span class="bid-amount"
+                          th:text="'₹' + ${#numbers.formatDecimal(bidData.userBid, 0, 'COMMA', 2, 'POINT')}"></span>
+                            <span class="bid-status" th:text="${bidData.status}"
+                                  th:classappend="${bidData.status == 'Winning'} ? ' status-winning' : ' status-outbid'"></span>
+                        </div>
+                        <div class="bid-auction-name"
+                             th:text="'Auction: ' + ${bidData.auction.auctionName}"></div>
+                        <div class="bid-time"
+                             th:text="'Placed on: ' + ${#temporals.format(bidData.bidTime, 'dd MMM yyyy HH:mm')}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Settings Tab -->
         <div class="tab-content" id="settings">
             <h2 class="section-title">Account Settings</h2>
