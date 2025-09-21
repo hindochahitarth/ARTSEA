@@ -26,6 +26,4 @@ Optional<Bid> findTopByArtwork_ArtworkIdOrderByBidAmountDescBidTimeDesc(Long art
 
     @Query("SELECT b FROM Bid b WHERE b.artwork.artworkId = :artworkId ORDER BY b.bidAmount DESC")
     List<Bid> findTopBidByArtworkId(Long artworkId);
-
-
 }

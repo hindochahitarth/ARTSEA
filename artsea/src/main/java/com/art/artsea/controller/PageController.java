@@ -1,7 +1,10 @@
 package com.art.artsea.controller;
 
 import com.art.artsea.model.*;
-import com.art.artsea.repository.*;
+import com.art.artsea.repository.ArtworkRepository;
+import com.art.artsea.repository.AuctionRepository;
+import com.art.artsea.repository.OrderRepository;
+import com.art.artsea.repository.UserRepository;
 import com.art.artsea.service.*;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -37,8 +40,6 @@ public class PageController {
     private ArtworkRepository artworkRepository;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private BidRepository bidRepository;
 
     @Autowired
     private BidService bidService;
@@ -59,7 +60,6 @@ public class PageController {
 
         return "home";
     }
-
 
 
 
