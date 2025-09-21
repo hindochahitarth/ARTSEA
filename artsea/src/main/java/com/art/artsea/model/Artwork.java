@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "artworks")
@@ -243,4 +244,33 @@ public class Artwork {
             return artwork;
         }
     }
+
+    @Transient
+    private boolean sold;
+
+    @Transient
+    private Double highestBid;
+
+    @Transient
+    private String highestBidderName;
+
+
+
+    // Getters and setters
+    public boolean isSold() { return sold; }
+    public void setSold(boolean sold) { this.sold = sold; }
+
+    public Double getHighestBid() { return highestBid; }
+    public void setHighestBid(Double highestBid) { this.highestBid = highestBid; }
+
+    public String getHighestBidderName() { return highestBidderName; }
+    public void setHighestBidderName(String highestBidderName) { this.highestBidderName = highestBidderName; }
+
+    @OneToMany(mappedBy = "artwork", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Bid> bids;
+
+    // Getter and Setter
+    public List<Bid> getBids() { return bids; }
+    public void setBids(List<Bid> bids) { this.bids = bids; }
+
 }

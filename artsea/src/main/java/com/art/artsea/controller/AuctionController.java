@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
 public class AuctionController {
@@ -105,6 +106,4 @@ public class AuctionController {
                     .body("Error deleting auction: " + e.getMessage());
         }
     }
-
-
 }

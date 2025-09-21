@@ -7,11 +7,11 @@
             <ul id="navbar-menu">
                 <li class="nav-item"><a href="#">AUCTIONS</a>
                     <div class="dropdown">
-                        <a href="/live-auctions">Auction</a>
+                        <a href="/live-auctions">Live Auction</a>
                         <a href="/past-auctions">Auction Results</a>
+                        <a href="/upcoming-auctions">Future Auction</a>
                         <a href="/buy">Buy</a>
                         <a href="/sell">Sell</a>
-                        <a href="/record-price-artwork">Record Price Artwork</a>
                         <a href="/faqs">FAQs</a>
                     </div>
                 </li>
@@ -70,9 +70,9 @@
             <div class="overlay-sublinks" id="auctions">
                 <a href="/auctions" class="overlay-sublink">Auction</a>
                 <a href="/auctions-result" class="overlay-sublink">Auction Results</a>
+                <a href="/upcoming-auctions" class="overlay-sublink">Future Auction</a>
                 <a href="/buy" class="overlay-sublink">Buy</a>
                 <a href="/sell" class="overlay-sublink">Sell</a>
-                <a href="/record-price-artwork" class="overlay-sublink">Record Price Artwork</a>
                 <a href="/faq" class="overlay-sublink">FAQs</a>
             </div>
 
@@ -101,7 +101,7 @@
             </div>
             <div th:if="${session.user != null and session.user.role.name() == 'BUYER'}" class="overlay-sublinks" id="profile">
             <a href="/my-profile" class="overlay-sublink">My Profile</a>
-                <a href="/my-auctions" class="overlay-sublink">My Auctions</a>
+<!--                <a href="/my-auctions" class="overlay-sublink">My Auctions</a>-->
                 <a href="/logout" class="overlay-sublink">Logout</a>
             </div>
         </div>

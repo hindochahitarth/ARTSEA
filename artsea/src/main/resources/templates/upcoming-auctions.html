@@ -5,214 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>ArtSea - Upcoming Auctions</title>
-    <style>
-        /* Base Styles from home.html */
-        .view-results-btn:disabled {
-            background-color: #ccc;   /* Greyed out look */
-            cursor: not-allowed;
-        }
-
-
-        /* Navbar styles from home.html */
-
-        /* Rest of the navbar styles from home.html would go here */
-        /* ... */
-
-        /* Auction Results Section Styles */
-        .auction-results-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .auction-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        @media (min-width: 768px) {
-            .auction-header {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
-
-        .auction-title {
-            font-size: 28px;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        @media (min-width: 768px) {
-            .auction-title {
-                margin-bottom: 0;
-                text-align: left;
-            }
-        }
-
-        .auction-tabs {
-            display: flex;
-            height: 50px;
-            border: 1px solid #c0c0c0;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .auction-tab {
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: 500;
-            background: white;
-            color: #333;
-        }
-
-        .auction-tab.active {
-            background: #003366;
-            color: white;
-        }
-
-        .auction-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 22px;
-            padding: 0 20px;
-        }
-
-        @media (min-width: 640px) {
-            .auction-grid {
-                grid-template-columns: repeat(3, 1fr);
-                padding: 0;
-            }
-        }
-
-        .auction-card {
-            max-width: 410px;
-            display: flex;
-            flex-direction: column;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid #eee;
-        }
-
-        .auction-image-container {
-            position: relative;
-            width: 100%;
-            height: 248px;
-            margin-bottom: 40px;
-        }
-
-        .auction-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            cursor: pointer;
-        }
-
-        .auction-name {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .auction-date {
-            font-size: 14px;
-            font-weight: 300;
-            margin-bottom: 16px;
-        }
-
-        .auction-divider {
-            border: none;
-            border-top: 1px solid #e2e8f0;
-            margin: 16px 0;
-        }
-
-        .auction-total {
-            font-size: 14px;
-        }
-
-        .view-results-btn {
-            width: 100%;
-            height: 40px;
-            background: #24221D;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-top: 24px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .view-results-btn:hover {
-            background: #003366;
-        }
-
-        /* Footer styles from home.html would go here */
-        /* ... */
-
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            .auction-title {
-                font-size: 24px;
-            }
-            
-            .auction-tabs {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .auction-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .auction-card {
-                max-width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
 <!--Navbar    -->
 <div th:replace="header :: header"></div>
     <!-- Auction Results Content -->
-    <div class="auction-results-container">
-        <div class="auction-header">
-            <h1 class="auction-title">Upcoming Auctions</h1>
-            <div class="auction-tabs">
-                <a href="/live-auctions" class="auction-tab" style="text-decoration:none;">LIVE AUCTIONS</a>
-                <a href="/upcoming-auctions" class="auction-tab active" style="text-decoration:none;">UPCOMING AUCTIONS</a>
-                <a href="/past-auctions" class="auction-tab" style="text-decoration:none;">PAST AUCTIONS</a>
+    <div class="upcoming-auctions-container">
+        <div class="upcoming-header">
+            <h1 class="upcoming-title">Upcoming Auctions</h1>
+            <div class="upcoming-tabs">
+                <a href="/live-auctions" class="upcoming-tab" style="text-decoration:none;">LIVE AUCTIONS</a>
+                <a href="/upcoming-auctions" class="upcoming-tab active" style="text-decoration:none;">UPCOMING AUCTIONS</a>
+                <a href="/past-auctions" class="upcoming-tab" style="text-decoration:none;">PAST AUCTIONS</a>
             </div>
         </div>
 
-        <div class="auction-grid">
+        <!-- If no auctions -->
+        <div th:if="${auctions == null or auctions.isEmpty()}">
+            <p class="no-auctions-message">No live auctions available at this time.</p>
+        </div>
+
+<!--        <div class="past-auction-filter">-->
+<!--            <select>-->
+<!--                <option>Sort by: Most Recent</option>-->
+<!--                <option>Sort by: Highest Sale</option>-->
+<!--                <option>Sort by: Auction Name</option>-->
+<!--            </select>-->
+<!--        </div>-->
+
+        <div class="upcoming-grid">
             <th:block th:each="auction : ${auctions}">
-                <div class="auction-card">
-                    <div class="auction-image-container">
+                <div class="upcoming-card">
+                    <div class="upcoming-image-container">
                         <img th:src="@{${auction.imageUrl}}"
                              th:alt="${auction.auctionName}"
-                             class="auction-image">
+                             class="upcoming-image">
                     </div>
-                    <h4 class="auction-name" th:text="${auction.auctionName}"></h4>
-                    <p class="auction-date">
+                    <h4 class="upcoming-name" th:text="${auction.auctionName}"></h4>
+                    <p class="upcoming-date">
                         <span th:text="${#temporals.format(auction.startTime, 'dd MMM')}"></span>
                         -
                         <span th:text="${#temporals.format(auction.endTime, 'dd MMM, yyyy')}"></span>
                     </p>
-                    <hr class="auction-divider">
+                    <hr class="upcoming-divider">
 <!--                    <div class="auction-total">Preview Opens Soon</div>-->
-                    <button class="view-results-btn"
+                    <button class="upcoming-view-results-btn"
                             th:onclick="|window.location.href='/upcoming-preview/${auction.auctionId}'|"
                             th:disabled="${T(java.time.LocalDateTime).now().isBefore(auction.applyEndTime)}"
                             th:text="${T(java.time.LocalDateTime).now().isAfter(auction.applyEndTime) ? 'View Preview' : 'Preview Opens Soon'}">
@@ -232,22 +69,20 @@
     <script>
         // Tab switching functionality
         const tabs = document.querySelectorAll('.auction-tab');
-        
+
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 // Remove active class from all tabs
                 tabs.forEach(t => t.classList.remove('active'));
                 // Add active class to clicked tab
                 tab.classList.add('active');
-                
+
                 // Here you would typically load different content based on the selected tab
                 // For now, we'll just log which tab was clicked
                 console.log(tab.textContent + ' clicked');
             });
         });
 
-        // Mobile menu functionality from home.html would go here
-        // ...
     </script>
 </body>
 </html>

@@ -277,77 +277,196 @@
                 max-width: 100%;
             }
         }
+
+
+        .toast {
+            min-width: 250px;
+            margin-bottom: 10px;
+            padding: 14px 24px;
+            background-color: #38a169; /* green for success */
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s ease, transform 0.4s ease;
+            font-weight: 500;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.error {
+            background-color: #e53e3e; /* red for errors */
+        }
+
     </style>
 </head>
 <body>
 <!--Navbar    -->
 <div th:replace="header :: header"></div>
 <!-- Auction Results Content -->
-<div class="auction-results-container">
-    <div class="auction-header">
-        <h1 class="auction-title">Artwork Lots</h1>
-        <div class="auction-tabs">
-            <a href="/live-auctions" class="auction-tab active">LIVE AUCTIONS</a>
-            <a href="/upcoming-auctions" class="auction-tab">UPCOMING AUCTIONS</a>
-            <a href="/past-auctions" class="auction-tab">PAST AUCTIONS</a>
+<!-- Keep your existing Thymeleaf rendering -->
+<div class="auction-grid">
+    <div class="auction-card"
+         th:each="artworkData : ${artworks}"
+         th:attr="data-artwork-id=${artworkData.artwork.artworkId}">
+
+        <div class="auction-image-container">
+            <img th:src="@{${artworkData.artwork.imageUrl}}"
+                 th:alt="${artworkData.artwork.title}"
+                 class="auction-image">
         </div>
-    </div>
 
-    <div class="auction-grid">
-        <div class="auction-card" th:each="artworkData : ${artworks}">
-            <div class="auction-image-container">
-                <img th:src="@{${artworkData.artwork.imageUrl}}"
-                     th:alt="${artworkData.artwork.title}"
-                     class="auction-image">
-            </div>
+        <h4 class="auction-name" th:text="${artworkData.artwork.title}"></h4>
 
-            <h4 class="auction-name" th:text="${artworkData.artwork.title}"></h4>
-<!--            <p class="auction-time-left">Ends in <span th:text="${auction.timeLeft}"></span></p>-->
+        <!-- Current Bid -->
+        <p class="current-bid">
+            Current Bid: <span class="bid-amount"
+                               th:text="'₹' + ${#numbers.formatDecimal(artworkData.currentBid, 0, 'COMMA', 2, 'POINT')}"></span>
+        </p>
+        <p class="next-bid">
+            Highest Bidder: <span class="highest-bidder-name" th:text="${artworkData.highestBidderName}">No bids yet</span>
+        </p>
 
-            <!-- Current and Next Bid -->
-            <p class="current-bid">
-                Current Bid: <span class="bid-amount"
-                                   th:text="'₹' + ${#numbers.formatDecimal(artworkData.currentBid, 0, 'COMMA', 2, 'POINT')}"></span>
-            </p>
-            <p class="next-bid"
-               th:text="'Next Bid: ₹' + ${#numbers.formatDecimal(artworkData.nextBid, 0, 'COMMA', 2, 'POINT')}
-                     + (${artworkData.currentBid == artworkData.artwork.startingPrice} ? ' (Be the first one)' : ' (10% higher)')">
-            </p>
 
-            <div class="bid-form">
-                <button class="bid-btn"
-                        th:text="'Bid ₹' + ${#numbers.formatDecimal(artworkData.nextBid, 0, 'COMMA', 2, 'POINT')}"
-                        th:onclick="'placeBid(' + ${artworkData.artwork.artworkId} + ',' + ${artworkData.nextBid} + ')'">
-                </button>
-            </div>
+        <div class="bid-form">
+            <!-- Store current bid as data attribute for JS to calculate next bid -->
+            <button class="bid-btn"
+                    th:attr="data-current-bid=${artworkData.currentBid}"
+                    th:attrappend="data-starting-price=${artworkData.artwork.startingPrice}"
+                    onclick="placeBid(this)">
+                Bid ₹<span th:text="${#numbers.formatDecimal(artworkData.currentBid, 0, 'COMMA', 2, 'POINT')}"></span>
+            </button>
+
+
         </div>
-    </div>
 
+    </div>
 </div>
-
-<!--Footer    -->
 <div th:replace="footer :: footer"></div>
 <script src="/home.js"></script>
 
-<script>
-    // Tab switching functionality
-    const tabs = document.querySelectorAll('.auction-tab');
+<div id="notification-container" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;"></div>
 
+
+
+
+<!-- SockJS -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<!-- StompJS (browser global UMD build) -->
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+
+<script>
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('notification-container');
+        const toast = document.createElement('div');
+        toast.classList.add('toast');
+
+        if(type === 'error') {
+            toast.style.backgroundColor = '#e53e3e';
+        }
+
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => toast.classList.add('show'), 10);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => container.removeChild(toast), 400);
+        }, 3000);
+    }
+
+    // Tab switching (optional)
+    const tabs = document.querySelectorAll('.auction-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            // Remove active class from all tabs
             tabs.forEach(t => t.classList.remove('active'));
-            // Add active class to clicked tab
             tab.classList.add('active');
-
-            // Here you would typically load different content based on the selected tab
-            // For now, we'll just log which tab was clicked
-            console.log(tab.textContent + ' clicked');
         });
     });
 
-    // Bid placement functionality with 10% increment
-    function placeBid(artworkId, bidAmount) {
+    let stompClient = null;
+
+    // Helper: update button to 10% higher than current bid
+    function updateNextBidButton(card, currentBid, startingPrice, hasBids = false) {
+        const btn = card.querySelector(".bid-btn");
+
+        let nextBid;
+        if (!hasBids && currentBid === startingPrice) {
+            // First bid: allow same as starting price
+            nextBid = startingPrice;
+        } else {
+            // Subsequent bids: 10% increment
+            nextBid = currentBid * 1.1;
+        }
+
+        btn.textContent = "Bid ₹" + nextBid.toFixed(2);
+        btn.setAttribute("data-next-bid", nextBid.toFixed(2));
+        btn.setAttribute("data-current-bid", currentBid.toFixed(2));
+    }
+
+
+
+    // Initialize all buttons on page load
+    // Initialize all buttons on page load with starting price consideration
+    document.querySelectorAll(".auction-card").forEach(card => {
+        const currentBid = parseFloat(card.querySelector(".bid-btn").getAttribute("data-current-bid"));
+        const startingPrice = parseFloat(card.querySelector(".bid-btn").getAttribute("data-starting-price"));
+        const highestBidder = card.querySelector(".highest-bidder-name").textContent.trim();
+
+        const hasBids = highestBidder && highestBidder !== "No bids yet";
+        updateNextBidButton(card, currentBid, startingPrice, hasBids);
+    });
+
+
+
+    // Connect WebSocket
+    function connect() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket); // Works now
+
+        stompClient.connect({}, function () {
+            document.querySelectorAll(".auction-card").forEach(card => {
+                const artworkId = card.getAttribute("data-artwork-id");
+
+                stompClient.subscribe(`/topic/auction/${artworkId}`, function (message) {
+                    const bid = JSON.parse(message.body);
+                    const currentBid = parseFloat(bid.bidAmount.toString().replace(/[^\d.]/g, ''));
+                    const startingPrice = parseFloat(card.querySelector(".bid-btn").getAttribute("data-starting-price"));
+
+                    // Update UI
+                    card.querySelector(".bid-amount").textContent = "₹" + currentBid.toFixed(2);
+
+                    // Now always true because we know at least one bid exists
+                    updateNextBidButton(card, currentBid, startingPrice, true);
+
+                    // Update highest bidder name
+                    const highestBidderElem = card.querySelector(".highest-bidder-name");
+                    if (highestBidderElem) {
+                        highestBidderElem.textContent = bid.bidderName || 'No bids yet';
+                    }
+                });
+            });
+        });
+    }
+
+
+
+    // Called when user clicks "Bid"
+    function placeBid(button) {
+        const card = button.closest(".auction-card");
+        const artworkId = card.getAttribute("data-artwork-id");
+        const bidAmount = button.getAttribute("data-next-bid");
+
         fetch(`/bid/${artworkId}`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -355,18 +474,19 @@
         })
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    alert('Bid placed successfully!');
-                    location.reload(); // Reload to update bids
+                if (!data.success) {
+                    showToast('Failed: ' + data.message, 'error');
                 } else {
-                    alert('Failed: ' + data.message);
+                    showToast('Bid Placed Successfully!');
                 }
             })
-            .catch(err => alert('Error placing bid.'));
+            .catch(err => showToast('Error placing bid.', 'error'));
     }
 
-    // Mobile menu functionality from home.html would go here
-    // ...
+
+    window.addEventListener('load', connect);
 </script>
+
+
 </body>
 </html>

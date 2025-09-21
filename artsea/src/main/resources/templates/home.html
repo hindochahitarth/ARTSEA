@@ -7,123 +7,10 @@
     <link rel="stylesheet" th:href="@{/styles.css}">
     <title>ArtSea - Home</title>
     <style>
-        /* Base Styles */
-
-        /* Desktop Navbar */
-
-        /*.search-bar button {*/
-        /*    background: none;*/
-        /*    border: none;*/
-        /*    cursor: pointer;*/
-        /*    font-size: 1.1rem;*/
-        /*    margin-left: 5px;*/
-        /*    color: #555;*/
-        /*}*/
-
-        /* Mobile Navbar */
-
-
-        /* Overlay menu styles */
-
-        /*@keyframes fadeIn {*/
-        /*    from {*/
-        /*        opacity: 0;*/
-        /*    }*/
-
-        /*    to {*/
-        /*        opacity: 1;*/
-        /*    }*/
-        /*}*/
-
-
-
-        /* Slider styles */
-        .slider {
-            position: relative;
-            max-width: 1100px;
-            margin: 40px auto 0 auto;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        .slides {
-            display: flex;
-            transition: transform 0.6s cubic-bezier(.77, 0, .18, 1);
-            width: 100%;
-        }
-
-        .slide {
-            min-width: 100%;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        .slide img {
-            width: 100%;
-            display: block;
-            height: 380px;
-            object-fit: cover;
-        }
-
-        .slide-caption {
-            position: absolute;
-            bottom: 32px;
-            left: 32px;
-            background: rgba(30, 30, 30, 0.7);
-            color: #fff;
-            padding: 22px 28px;
-            border-radius: 12px;
-            max-width: 340px;
-        }
-
-        .slide-caption h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .slide-caption p {
-            margin: 0 0 12px 0;
-            font-size: 1rem;
-        }
-
-        .slide-caption .btn {
-            background: #fff;
-            color: #003366;
-            padding: 8px 18px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .slider-dots {
-            text-align: center;
-            margin: 12px 0 0 0;
-        }
-
-        .slider-dots span {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            margin: 0 6px;
-            background: #ccc;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .slider-dots .active {
-            background: #003366;
-        }
-
         /* Auction Sections */
         .section {
             max-width: 1200px;
-            margin: 60px auto 0 auto;
+            margin: 100px auto 40px auto;
             padding: 0 20px;
         }
 
@@ -132,18 +19,197 @@
             font-weight: 800;
             letter-spacing: 1px;
             margin-bottom: 18px;
+            position: relative;
+            padding-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .section h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 2px;
         }
 
         .section p {
             max-width: 700px;
             font-size: 1.1rem;
-            color: #444;
+            color: #555;
             line-height: 1.7;
             margin-bottom: 32px;
         }
 
-        .section button {
-            background: #222222;
+        /* Highlighted Section */
+        .section-highlight {
+            background-color: #fdfdfd; /* Soft off-white */
+            padding: 60px 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .section-highlight h2 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .section-highlight h2:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 2px;
+        }
+
+        /* Subtext with shimmer animation and fade-in */
+        @keyframes shimmer {
+            0% { background-position: -500px 0; }
+            100% { background-position: 500px 0; }
+        }
+
+        .subtext {
+            font-size: 1.2rem;
+            line-height: 1.85;
+            max-width: 850px;
+            margin: 0 auto;
+            color: #4b4b4b;
+            letter-spacing: 0.4px;
+            background: linear-gradient(90deg, #4b4b4b 0%, #6c6c6c 50%, #4b4b4b 100%);
+            background-size: 500px 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s infinite linear;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease-out;
+        }
+
+        .section-highlight.visible .subtext {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Auction Grid and Cards */
+        .auction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .auction-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 18px 18px 20px 18px;
+            text-align: left;
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .auction-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .auction-card:hover img {
+            transform: scale(1.03);
+        }
+
+        .card-content {
+            padding: 12px 0 0 0;
+        }
+
+        .auction-title {
+            margin-top: 12px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            line-height: 1.4;
+            min-height: 3rem;
+        }
+
+        .auction-card .date {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* Status styles for different auction types */
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .status-upcoming {
+            background-color: #ffeaa7;
+            color: #d35400;
+        }
+
+        /* Auction countdown timer */
+        .auction-time-left {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e53e3e;
+            margin: 8px 0;
+            text-align: left;
+        }
+
+        .auction-time-left span {
+            font-weight: bold;
+            color: #e53e3e;
+        }
+
+        /* Live auction badge */
+        .live-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 10;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #2c3e50, #1a2530);
             color: #fff;
             padding: 16px 36px;
             font-size: 1.1rem;
@@ -152,206 +218,247 @@
             border-radius: 8px;
             margin-bottom: 36px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .auction-grid {
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            margin-top: 24px;
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1a2530, #2c3e50);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .auction-card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            padding: 18px 18px 12px 18px;
-            width: 220px;
-            text-align: left;
-            border: 1px solid #eee;
-        }
-
-        .auction-card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .auction-card div {
-            margin-top: 12px;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .auction-card button {
-            margin: 10px 0 0 0;
-            padding: 6px 18px;
-            background: #f5f4f0;
-            color: #222;
-            border: none;
+        .card-btn {
+            margin: 15px 0 0 0;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 1px solid #e9ecef;
             border-radius: 6px;
             font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
 
-        .auction-card .date {
-            font-size: 0.98rem;
-            color: #444;
-            margin-top: 10px;
+        .card-btn:hover {
+            background: #2c3e50;
+            color: white;
         }
-
-        .auction-card .status {
-            color: #888;
-        }
-
-        /* Footer */
-
 
         /* Responsive Styles */
-
-
         @media (max-width: 900px) {
-
-            .section h2 {
-                font-size: 2.2rem;
-            }
+            .section h2 { font-size: 2.2rem; }
+            .section-highlight h2 { font-size: 2.4rem; }
+            .subtext { font-size: 1.1rem; }
+            .auction-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
         }
 
         @media (max-width: 600px) {
-
-            .auction-grid {
-                justify-content: center;
-            }
-
-            .auction-card {
-                width: 100%;
-                max-width: 280px;
-            }
+            .section h2 { font-size: 1.8rem; }
+            .section-highlight h2 { font-size: 2rem; }
+            .subtext { font-size: 1rem; }
+            .auction-grid { grid-template-columns: 1fr; gap: 20px; }
+            .auction-card { max-width: 100%; }
         }
     </style>
 </head>
-
 <body>
-    <!--Navbar    -->
-    <div th:replace="header :: header"></div>
+<!--Navbar    -->
+<div th:replace="header :: header"></div>
 
-    <!-- Slider Section -->
-    <div class="slider" id="slider">
-        <div class="slides" id="slides">
-            <div class="slide">
-                <img src="/image1.jpeg" alt="Slide 1">
-                <div class="slide-caption">
-                    <h2>ICONIC MASTERS</h2>
-                    <p>Modern Indian Art<br>29 Jul - 30 Jul, 2025</p>
-                    <a href="#" class="btn">View Catalogue</a>
-                </div>
-            </div>
-            <div class="slide">
-                <img src="/image2.jpeg" alt="Slide 2">
-                <div class="slide-caption">
-                    <h2>MODERN INDIAN ART</h2>
-                    <p>Collectors Choice<br>26 Jun - 27 Jun, 2025</p>
-                    <a href="#" class="btn">View Results</a>
-                </div>
-            </div>
-            <div class="slide">
-                <img src="/image3.jpeg" alt="Slide 3">
-                <div class="slide-caption">
-                    <h2>COLLECTORS CHOICE</h2>
-                    <p>Modern Indian Art<br>26 Jun - 27 Jun, 2025</p>
-                    <a href="#" class="btn">View Results</a>
-                </div>
+<!-- Slider Section -->
+<div class="slider" id="slider">
+    <div class="slides" id="slides">
+        <div class="slide">
+            <img src="/image1.jpeg" alt="Slide 1">
+            <div class="slide-caption">
+                <h2>ICONIC MASTERS</h2>
+                <p>29 Jul - 30 Jul, 2025</p>
+                <a href="#" class="btn">View Result</a>
             </div>
         </div>
-        <div class="slider-dots" id="slider-dots"></div>
+        <div class="slide">
+            <img src="/image2.jpeg" alt="Slide 2">
+            <div class="slide-caption">
+                <h2>MODERN ART</h2>
+                <p>26 Jun - 27 Jun, 2025</p>
+                <a href="#" class="btn">View Result</a>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="/image3.jpeg" alt="Slide 3">
+            <div class="slide-caption">
+                <h2>COLLECTORS CHOICE</h2>
+                <p>26 Jun - 27 Jun, 2025</p>
+                <a href="#" class="btn">View Result</a>
+            </div>
+        </div>
     </div>
+    <div class="slider-dots" id="slider-dots"></div>
+</div>
 
-    <!-- AUCTIONS ON THE WAY SECTION -->
-    <section class="section">
-        <h2>AUCTIONS ON THE WAY</h2>
-        <p>
-            Over the years, we have curated a wide range of online auctions in India, covering a diverse array of
-            categories. Our portfolio boasts an impressive collection of Modern Indian Art from famous painters,
-            exquisite vintage jewellery, fine silverware, rare timepieces, luxurious textiles, coveted celebrity
-            memorabilia, rare books, numismatic treasures, philatelic gems, and even vintage cars. Take a look at the
-            offerings in our upcoming online auctions.
-        </p>
-<!--        <button>SEE ALL UPCOMING AUCTIONS</button>-->
-        <button onclick="window.location.href='/upcoming-auctions'">SEE ALL UPCOMING AUCTIONS</button>
-        <div class="auction-grid">
-            <th:block th:each="auction : ${upcomingAuctions}">
-                <div class="auction-card">
-                    <img th:src="@{${auction.imageUrl}}" th:alt="${auction.auctionName}">
+<!-- AUCTIONS ON THE WAY SECTION -->
+<section class="section section-highlight">
+    <h2>Where Art Comes Alive</h2>
+    <p class="subtext">
+        At ArtSea, we bring masterpieces and collectibles to life. Explore a curated world of exquisite artworks, rare vintage treasures, and luxury collectibles. Whether you are an avid collector, a first-time bidder, or an art enthusiast, our platform connects you to timeless creations, exclusive auctions, and unforgettable experiences. Dive in, discover, and let your passion for art flourish.
+    </p>
+</section>
+<!-- LIVE AUCTIONS SECTION -->
+<section class="section" th:if="${liveAuctions != null and !liveAuctions.isEmpty()}">
+    <h2>LIVE AUCTIONS</h2>
+    <div class="auction-grid">
+        <th:block th:each="auction : ${liveAuctions}">
+            <div class="auction-card">
+                <div class="live-badge">LIVE</div>
+                <img th:src="@{${auction.imageUrl}}" th:alt="${auction.auctionName}">
+                <div class="card-content">
                     <div th:text="${auction.auctionName}"></div>
-<!--                    <button>Explore</button>-->
-                    <div class="date">
+                    <span class="date">
                         <span th:text="${#temporals.format(auction.startTime, 'dd MMM')}"></span>
                         -
                         <span th:text="${#temporals.format(auction.endTime, 'dd MMM, yyyy')}"></span>
-                        <br>
-                        <span class="status">Upcoming</span>
-                    </div>
+                    </span>
+
+                    <!-- Countdown timer placeholder -->
+                    <p class="auction-time-left"
+                       th:attr="data-endtime=${#temporals.format(auction.endTime, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                        <span>Ending Soon...</span>
+                    </p>
+                    <button class="card-btn"
+                            th:onclick="'window.location.href=\'/live-auction/' + ${auction.auctionId} + '\';'">
+                        Enter Auction
+                    </button>
                 </div>
-            </th:block>
-        </div>
+            </div>
+        </th:block>
+    </div>
+</section>
+<section class="section">
+    <h2>UPCOMING AUCTIONS</h2>
+    <div class="auction-grid">
+        <th:block th:each="auction : ${upcomingAuctions}">
+            <div class="auction-card">
+                <img th:src="@{${auction.imageUrl}}" th:alt="${auction.auctionName}">
+                <div class="card-content">
+                    <div th:text="${auction.auctionName}"></div>
+                    <span class="date">
+                        <span th:text="${#temporals.format(auction.startTime, 'dd MMM')}"></span>
+                        -
+                        <span th:text="${#temporals.format(auction.endTime, 'dd MMM, yyyy')}"></span>
+                    </span>
+                    <span class="status status-upcoming">Upcoming</span>
+<!--                    <button class="card-btn" th:onclick="'window.location.href=\'/upcoming-auction/' + ${auction.auctionId} + '\';'">-->
+<!--                        View Details-->
+<!--                    </button>-->
+                </div>
+            </div>
+        </th:block>
+    </div>
+</section>
 
-    </section>
-
-    <!-- RECENT AUCTIONS SECTION -->
-    <section class="section">
-        <h2>RECENT AUCTIONS</h2>
-        <div class="auction-grid">
-            <th:block th:each="pastauction : ${pastAuctions}">
+<!-- RECENT AUCTIONS SECTION -->
+<section class="section">
+    <h2>RECENT AUCTIONS</h2>
+    <div class="auction-grid">
+        <th:block th:each="pastauction : ${pastAuctions}">
             <div class="auction-card">
                 <img th:src="@{${pastauction.imageUrl}}" th:alt="${pastauction.auctionName}">
-                <div th:text="${pastauction.auctionName}"></div>
-
-                <div class="date">
-                    <span th:text="${#temporals.format(pastauction.startTime, 'dd MMM')}"></span>
-                    -
-                    <span th:text="${#temporals.format(pastauction.endTime, 'dd MMM, yyyy')}"></span>
-                    <br>
+                <div class="card-content">
+                    <div th:text="${pastauction.auctionName}"></div>
+                    <span class="date">
+                        <span th:text="${#temporals.format(pastauction.startTime, 'dd MMM')}"></span>
+                        -
+                        <span th:text="${#temporals.format(pastauction.endTime, 'dd MMM, yyyy')}"></span>
+                    </span>
+                    <button class="card-btn" th:onclick="'window.location.href=\'/past-auction/' + ${pastauction.auctionId} + '\';'">
+                        View Results
+                    </button>
                 </div>
-                <button>View Result</button>
             </div>
-            </th:block>
-        </div>
-    </section>
+        </th:block>
+    </div>
+</section>
 
-    <div th:replace="footer :: footer"></div>
-    <script src="/home.js"></script>
+<div th:replace="footer :: footer"></div>
+<script src="/home.js"></script>
+<script>
+    const highlightSection = document.querySelector('.section-highlight');
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                highlightSection.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.3 });
 
-    <script>
-        // Simple slider logic
-        const slides = document.getElementById('slides');
-        const dotsContainer = document.getElementById('slider-dots');
-        const slideCount = slides.children.length;
-        let currentIndex = 0;
+    observer.observe(highlightSection);
+</script>
 
-        function showSlide(index) {
-            slides.style.transform = `translateX(-${index * 100}%)`;
-            Array.from(dotsContainer.children).forEach((dot, i) => {
-                dot.className = i === index ? 'active' : '';
-            });
-        }
+<script>
+    function updateCountdown() {
+        const now = new Date().getTime();
 
-        // Create dots
-        for (let i = 0; i < slideCount; i++) {
-            const dot = document.createElement('span');
-            dot.onclick = () => { currentIndex = i; showSlide(currentIndex); };
-            dotsContainer.appendChild(dot);
-        }
+        document.querySelectorAll('.auction-card').forEach(card => {
+            const timeLeftElement = card.querySelector('.auction-time-left');
+            if (!timeLeftElement) return; // skip if card has no timer
 
+            const endTimeAttr = timeLeftElement.getAttribute('data-endtime');
+            if (!endTimeAttr) return;
+
+            const endTime = new Date(endTimeAttr).getTime();
+            const distance = endTime - now;
+
+            if (distance <= 0) {
+                timeLeftElement.querySelector('span').innerText = "Ended";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            let displayText = '';
+            if (days > 0) displayText += `${days}d `;
+            displayText += `${hours}h ${minutes}m ${seconds}s`;
+
+            timeLeftElement.querySelector('span').innerText = displayText;
+        });
+    }
+
+    // Initial call + update every second
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+    // Simple slider logic
+    const slides = document.getElementById('slides');
+    const dotsContainer = document.getElementById('slider-dots');
+    const slideCount = slides.children.length;
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        Array.from(dotsContainer.children).forEach((dot, i) => {
+            dot.className = i === index ? 'active' : '';
+        });
+    }
+
+    // Create dots
+    for (let i = 0; i < slideCount; i++) {
+        const dot = document.createElement('span');
+        dot.onclick = () => { currentIndex = i; showSlide(currentIndex); };
+        dotsContainer.appendChild(dot);
+    }
+
+    showSlide(currentIndex);
+
+    // Auto slide
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % slideCount;
         showSlide(currentIndex);
-
-        // Auto slide
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % slideCount;
-            showSlide(currentIndex);
-        }, 4000);
-
-    </script>
+    }, 4000);
+</script>
 </body>
-
 </html>

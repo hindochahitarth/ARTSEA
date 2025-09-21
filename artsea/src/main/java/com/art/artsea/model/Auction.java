@@ -2,6 +2,8 @@ package com.art.artsea.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "auctions")
@@ -117,4 +119,18 @@ public class Auction {
         ONGOING,
         ENDED
     }
+
+    // One auction can have multiple artworks
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Artwork> artworks = new ArrayList<>();
+
+    // Getter & Setter
+    public List<Artwork> getArtworks() {
+        return artworks;
+    }
+
+    public void setArtworks(List<Artwork> artworks) {
+        this.artworks = artworks;
+    }
+
 }

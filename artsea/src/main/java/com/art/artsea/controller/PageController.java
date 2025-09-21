@@ -1,32 +1,27 @@
 package com.art.artsea.controller;
 
-import com.art.artsea.model.Artwork;
-import com.art.artsea.model.Auction;
-import com.art.artsea.model.Category;
-import com.art.artsea.model.User;
-import com.art.artsea.repository.ArtworkRepository;
-import com.art.artsea.repository.AuctionRepository;
-import com.art.artsea.repository.UserRepository;
+import com.art.artsea.model.*;
+import com.art.artsea.repository.*;
 import com.art.artsea.service.*;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class PageController {
@@ -40,38 +35,203 @@ public class PageController {
     private AuctionRepository auctionRepository;
     @Autowired
     private ArtworkRepository artworkRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private BidRepository bidRepository;
 
     @Autowired
     private BidService bidService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/")
     public String showHome(Model model) {
 
+        List<Auction> liveAuctions = auctionService.getLiveAuctions();
+        model.addAttribute("liveAuctions", liveAuctions);
+
         List<Auction> upcomingAuctions = auctionService.getUpcomingAuctions();
         model.addAttribute("upcomingAuctions", upcomingAuctions);
 
-        List<Auction> pastAuctions=auctionService.getPastAuctions();
+        List<Auction> pastAuctions = auctionService.getPastAuctions();
         model.addAttribute("pastAuctions", pastAuctions);
+
         return "home";
     }
 
+
+
+
     @GetMapping("/my-profile")
-    public String showProfile(Model model,HttpSession session)
-    {
-        Object user = session.getAttribute("user"); // or "user" depending on your login
+    public String showProfile(Model model, HttpSession session) {
+        Object user = session.getAttribute("user");
         if (user == null) {
-            return "redirect:/"; // redirect to home
+            return "redirect:/";
         }
-        if (user instanceof User) {
-            User loggedInUser = (User) user;
+
+        if (user instanceof User loggedInUser) {
             if (!"BUYER".equalsIgnoreCase(loggedInUser.getRole().name())) {
                 return "redirect:/";
             }
-            // Add user to the model for dynamic display
+
             model.addAttribute("user", loggedInUser);
+
+            LocalDateTime now = LocalDateTime.now();
+
+            // ------------------ Fetch Live Auction Bids ------------------
+            Map<Long, Bid> latestBidsByArtwork = bidService.getBidsByUser(loggedInUser.getUserId()).stream()
+                    .filter(bid -> {
+                        Artwork artwork = bid.getArtwork();
+                        Auction auction = artwork.getAuction();
+                        // only include ongoing auctions
+                        return auction.getStartTime().isBefore(now) && auction.getEndTime().isAfter(now);
+                    })
+                    .collect(Collectors.toMap(
+                            bid -> bid.getArtwork().getArtworkId(),
+                            bid -> bid,
+                            // if multiple bids by same user for same artwork → keep the latest one
+                            (bid1, bid2) -> bid1.getBidTime().isAfter(bid2.getBidTime()) ? bid1 : bid2
+                    ));
+
+            List<Map<String, Object>> bidsData = latestBidsByArtwork.values().stream().map(bid -> {
+                Map<String, Object> data = new HashMap<>();
+                Artwork artwork = bid.getArtwork();
+                Auction auction = artwork.getAuction();
+
+                double currentHighestBid = bidService.getHighestBidAmountForArtwork(artwork.getArtworkId())
+                        .orElse(artwork.getStartingPrice());
+
+                boolean isWinning = bid.getBidAmount().doubleValue() == currentHighestBid;
+
+                data.put("artwork", artwork);
+                data.put("userBid", bid.getBidAmount());
+                data.put("status", isWinning ? "Winning" : "Outbid");
+                data.put("auction", auction);
+
+                return data;
+            }).toList();
+
+            model.addAttribute("bidsData", bidsData);
+
+            // ------------------ All Bids (history, DESC) ------------------
+            List<Map<String, Object>> allBids = bidService.getBidsByUser(loggedInUser.getUserId()).stream()
+                    .sorted(Comparator.comparing(Bid::getBidTime).reversed()) // latest first
+                    .map(bid -> {
+                        Map<String, Object> data = new HashMap<>();
+                        Artwork artwork = bid.getArtwork();
+                        Auction auction = artwork.getAuction();
+
+                        double currentHighestBid = bidService.getHighestBidAmountForArtwork(artwork.getArtworkId())
+                                .orElse(artwork.getStartingPrice());
+
+                        boolean isWinning = bid.getBidAmount().doubleValue() == currentHighestBid;
+
+                        data.put("artwork", artwork);
+                        data.put("userBid", bid.getBidAmount());
+                        data.put("status", isWinning ? "Winning" : "Outbid");
+                        data.put("auction", auction);
+                        data.put("bidTime", bid.getBidTime()); // helpful for UI
+
+                        return data;
+                    })
+                    .toList();
+
+            model.addAttribute("allBids", allBids);
+
+
+
+            // ------------------ Pending Payments (won auctions) ------------------
+            List<Map<String, Object>> pendingPayments = bidService.getBidsByUser(loggedInUser.getUserId()).stream()
+                    .filter(bid -> {
+                        Artwork artwork = bid.getArtwork();
+                        Auction auction = artwork.getAuction();
+                        boolean auctionEnded = auction.getEndTime().isBefore(now);
+
+                        double highest = bidService.getHighestBidAmountForArtwork(artwork.getArtworkId())
+                                .orElse(artwork.getStartingPrice());
+
+                        boolean isWinningBid = bid.getBidAmount().doubleValue() == highest;
+
+                        // Check if payment already done
+                        boolean paymentPending = orderRepository.findByBid_BidId(bid.getBidId())
+                                .stream()
+                                .noneMatch(order ->
+                                        "SUCCESS".equalsIgnoreCase(order.getStatus()) ||
+                                                "PROCESSED".equalsIgnoreCase(order.getStatus())
+                                );
+
+
+                        return auctionEnded && isWinningBid && paymentPending;
+                    })
+                    .map(bid -> {
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("bidId", bid.getBidId());
+                        data.put("artwork", bid.getArtwork());
+                        data.put("finalBid", bid.getBidAmount());
+                        data.put("auction", bid.getArtwork().getAuction());
+                        data.put("paymentStatus", "Pending");
+                        return data;
+                    })
+                    .toList();
+
+            // ------------------ Won Auctions (Paid orders) ------------------
+            List<Map<String, Object>> wonOrders = orderRepository.findByUser_UserId(loggedInUser.getUserId()).stream()
+                    .filter(order -> "SUCCESS".equalsIgnoreCase(order.getStatus())
+                            || "PROCESSED".equalsIgnoreCase(order.getStatus()))
+                    .map(order -> {
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("artwork", order.getBid().getArtwork());
+                        data.put("finalBid", order.getAmount());
+                        data.put("auction", order.getBid().getArtwork().getAuction());
+                        data.put("status", order.getStatus());
+                        data.put("trackingId", order.getTrackingId()); // assuming trackingId column
+                        return data;
+                    })
+                    .toList();
+
+            // Total number of bids
+            long totalBids = bidService.getBidsByUser(loggedInUser.getUserId()).size();
+
+            // Total number of won auctions (paid orders)
+            long totalWon = wonOrders.size();
+
+            model.addAttribute("totalBids", totalBids);
+            model.addAttribute("totalWon", totalWon);
+
+
+            model.addAttribute("wonOrders", wonOrders);
+            model.addAttribute("pendingPayments", pendingPayments);
         }
+
         return "my-profile";
     }
+
+
+
+
+    @PostMapping("/my-profile/save")
+    public String saveProfile(User formUser, HttpSession session, Model model) {
+        User sessionUser = (User) session.getAttribute("user");
+
+        // Update DB
+        userService.updateProfile(sessionUser.getUserId(),
+                formUser.getUsername(),
+                formUser.getPhone());
+
+//        // Refresh user from DB
+//        User updatedUser = userService.findById(sessionUser.getUserId());
+//        session.setAttribute("user", updatedUser);
+//
+//        // Add updated user to model
+//        model.addAttribute("user", updatedUser);
+
+        return "my-profile";
+    }
+
+
+
+
 
     @GetMapping("/buy")
     public String showBuy() {
@@ -134,9 +294,54 @@ public class PageController {
 //    }
 
     @GetMapping("/past-auctions")
-    public String showPastAuctions() {
+    public String showPastAuctions(Model model) {
+        List<Auction> pastAuctions = auctionService.getPastAuctions();
+        List<Object[]> totals = auctionRepository.findPastAuctionTotals();
+
+        Map<Long, Double> totalSales = new HashMap<>();
+        for (Object[] row : totals) {
+            Long auctionId = (Long) row[0];
+            Double totalSale = ((Number) row[1]).doubleValue();
+            totalSales.put(auctionId, totalSale);
+        }
+
+        model.addAttribute("pastAuctions", pastAuctions);
+        model.addAttribute("totalSales", totalSales);
         return "auction-results";
     }
+
+    // Show single past auction details
+    @GetMapping("/past-auction/{auctionId}")
+    public String showPastAuctionDetails(@PathVariable Long auctionId, Model model) {
+        Auction auction = auctionRepository.findById(auctionId).orElse(null);
+        if (auction == null) {
+            return "redirect:/past-auctions";
+        }
+
+        List<Artwork> artworks = artworkRepository.findByAuctionAuctionId(auctionId);
+
+        for (Artwork artwork : artworks) {
+            List<Bid> bids = bidRepository.findTopBidByArtworkId(artwork.getArtworkId());
+
+            if (bids != null && !bids.isEmpty()) {
+                Bid highestBid = bids.get(0);
+                artwork.setSold(true);
+                artwork.setHighestBid(highestBid.getBidAmount().doubleValue());
+                artwork.setHighestBidderName(highestBid.getUser().getUsername()); // Assuming User entity has getUsername()
+            } else {
+                artwork.setSold(false);
+            }
+        }
+
+        model.addAttribute("auction", auction);
+        model.addAttribute("artworks", artworks);
+
+        return "past-auction";
+    }
+
+    
+
+
 
     @GetMapping("/upcoming-auctions")
     public String showUpcomingAuctions(Model model) {
@@ -588,34 +793,45 @@ public class PageController {
     public String showAuctionDetails(@PathVariable Long auctionId, Model model) {
         Auction auction = auctionService.getAuctionById(auctionId);
 
-        // Get all approved artworks
+        // ✅ Check if current time is within auction time
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(auction.getStartTime()) || now.isAfter(auction.getEndTime())) {
+            // Redirect back if auction not live
+            return "redirect:/live-auctions";
+        }
+
         List<Artwork> artworks = artworkRepository.findByAuctionIdAndStatus(
                 auctionId,
                 Artwork.ArtworkStatus.APPROVED
         );
 
-        // Prepare data for each artwork with current and next bid
         List<Map<String, Object>> artworkData = artworks.stream().map(artwork -> {
             Map<String, Object> data = new HashMap<>();
 
             double currentBid = bidService.getCurrentBidForArtwork(artwork.getArtworkId())
                     .orElse(artwork.getStartingPrice());
 
-            // Round to 2 decimal places
             double nextBid = (currentBid == artwork.getStartingPrice())
                     ? currentBid
                     : Math.round(currentBid * 1.1 * 100.0) / 100.0;
 
+            String highestBidderName = bidService.getHighestBidderName(artwork.getArtworkId())
+                    .orElse("No bids yet");
+
             data.put("artwork", artwork);
             data.put("currentBid", currentBid);
             data.put("nextBid", nextBid);
+            data.put("highestBidderName", highestBidderName);
+
             return data;
         }).toList();
 
         model.addAttribute("auction", auction);
         model.addAttribute("artworks", artworkData);
-        return "live-auction";
+
+        return "live-auction"; // page only shown if auction is live
     }
+
 
 
 

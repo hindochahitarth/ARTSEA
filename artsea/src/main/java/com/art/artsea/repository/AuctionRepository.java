@@ -30,9 +30,29 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Query("SELECT COUNT(a) FROM Auction a WHERE a.endTime < CURRENT_TIMESTAMP")
     long countPastAuctions();
 
+    @Query("SELECT a FROM Auction a WHERE a.endTime < CURRENT_TIMESTAMP ORDER BY a.endTime DESC")
+    List<Auction> findEndedAuctions();
+
 
     //for buyer's
     @Query("SELECT a FROM Auction a WHERE a.startTime <= CURRENT_TIMESTAMP AND a.endTime >= CURRENT_TIMESTAMP")
     List<Auction> findLiveAuctions();
+
+    // for user
+    @Query(value = """
+    SELECT a.auction_id, COALESCE(SUM(b.max_bid), 0) AS total
+    FROM auctions a
+    LEFT JOIN artworks aw ON aw.auction_id = a.auction_id
+    LEFT JOIN (
+        SELECT artwork_id, MAX(bid_amount) AS max_bid
+        FROM bids
+        GROUP BY artwork_id
+    ) b ON b.artwork_id = aw.artwork_id
+    WHERE a.end_time < NOW()
+    GROUP BY a.auction_id
+""", nativeQuery = true)
+    List<Object[]> findPastAuctionTotals();
+
+
 }
 
