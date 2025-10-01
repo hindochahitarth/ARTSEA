@@ -47,6 +47,7 @@ public class ArtworkService {
         return artworkRepository.findApprovedArtworksByAuctionId(auctionId);
     }
 
-
-
+    public List<Object[]> getAllArtworkStatus() {
+        return artworkRepository.getAllArtworkStatus(Artwork.ArtworkStatus.APPROVED);
+    }
 }

@@ -1,10 +1,7 @@
 package com.art.artsea.controller;
 
 import com.art.artsea.model.*;
-import com.art.artsea.repository.ArtworkRepository;
-import com.art.artsea.repository.AuctionRepository;
-import com.art.artsea.repository.OrderRepository;
-import com.art.artsea.repository.UserRepository;
+import com.art.artsea.repository.*;
 import com.art.artsea.service.*;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -504,6 +501,33 @@ public class PageController {
         return "admin/dashboard"; // dashboard template
     }
 
+    @GetMapping("/admin-artwork-status")
+    public String adminArtworkStatus(HttpSession session, Model model) {
+
+        // Check if admin is logged in
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            return "redirect:/admin"; // redirect to admin login
+        }
+
+        if (userObj instanceof User) {
+            User loggedInUser = (User) userObj;
+            if (!"ADMIN".equalsIgnoreCase(loggedInUser.getRole().name())) {
+                return "redirect:/"; // redirect non-admins to homepage
+            }
+        }
+
+        // Fetch artwork status list
+        List<Object[]> artworkStatusList = artworkService.getAllArtworkStatus();
+
+        // Pass data to template
+        model.addAttribute("artworks", artworkStatusList);
+//        model.addAttribute("totalArtworks", artworkStatusList.size());
+
+        return "admin/artwork-status"; // Thymeleaf template
+    }
+
+
 
 
     @GetMapping("/admin-verify-users")
@@ -770,6 +794,19 @@ public class PageController {
             model.addAttribute("liveArtworks", dashboardService.getLiveArtworks(loggedInUser.getUserId()));
             model.addAttribute("approvedArtworks", dashboardService.getSellerApprovedArtworks(loggedInUser.getUserId()));
             model.addAttribute("pendingArtworks", dashboardService.getSellerPendingArtworks(loggedInUser.getUserId()));
+
+            //for Sold Artwoks or Sales
+            // Count processed orders for this seller
+            long processedCount = orderRepository.findAll()
+                    .stream()
+                    .filter(order ->
+                            order.getBid().getArtwork().getUser().getUserId()
+                                    .equals(loggedInUser.getUserId())
+                                    && "PROCESSED".equalsIgnoreCase(order.getStatus())
+                    )
+                    .count();
+
+            model.addAttribute("processedCount", processedCount);
         }
 
 

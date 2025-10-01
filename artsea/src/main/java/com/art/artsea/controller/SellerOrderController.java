@@ -18,7 +18,7 @@ public class SellerOrderController {
     @Autowired
     private OrderRepository orderRepository;
 
-    // ✅ Show pending orders (Payment done but not fulfilled yet)
+    // Show pending orders (Payment done but not fulfilled yet)
     @GetMapping("/pending")
     public String viewPendingOrders(Model model, HttpSession session) {
         Object user = session.getAttribute("user");
@@ -46,7 +46,7 @@ public class SellerOrderController {
         return "seller/order-fulfillment"; // shows pending orders
     }
 
-    // ✅ Show processed orders (Sales history)
+    // Show processed orders (Sales history)
     @GetMapping("/processed")
     public String viewProcessedOrders(Model model, HttpSession session) {
         Object user = session.getAttribute("user");
@@ -74,7 +74,7 @@ public class SellerOrderController {
         return "seller/sales"; // shows processed orders
     }
 
-    // ✅ Mark order as processed
+    // Mark order as processed
     @PostMapping("/process")
     public String processOrder(@RequestParam Long orderId,
                                @RequestParam String trackingId,
@@ -97,7 +97,7 @@ public class SellerOrderController {
         order.setTrackingId(trackingId);
         orderRepository.save(order);
 
-        // ✅ Stay on same page (order-fulfillment.html)
+        // Stay on same page (order-fulfillment.html)
         return "redirect:/seller-orders/pending";
     }
 }

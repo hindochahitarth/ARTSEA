@@ -1,39 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArtSea Seller - Listing Status</title>
+    <title>ArtSea Admin - Auctions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
-    <link rel="stylesheet" href="styles-seller.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles-admin.css">
     <style>
-        .btn-apply {
-            background: var(--success); /* Green color */
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            border: none;
-            cursor: pointer;
-        }
+        /* Use your existing styles from manage-category.html */
+        /* Add any auction-specific styles here */
 
-        .btn-apply:hover {
-            background: #05b58b; /* Darker green on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(6, 214, 160, 0.2);
-        }
-
-        .btn-apply i {
-            margin-right: 0.25rem;
-        }
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -285,6 +262,29 @@
             }
         }
 
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-upcoming {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ff9800;
+        }
+
+        .status-ongoing {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-completed {
+            background: rgba(158, 158, 158, 0.2);
+            color: #9e9e9e;
+        }
+
         .btn-view {
             background: var(--primary);
         }
@@ -293,30 +293,11 @@
             background: #3f51b5;
             transform: translateY(-2px);
         }
-
         /* Auction Table Specific Styles */
         .auctions-table {
             width: 100%;
             border-collapse: collapse;
         }
-
-        /* Consistent table cell styling */
-        .auctions-table td {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            vertical-align: middle;
-            font-weight: 500; /* Make all text same weight */
-            color: var(--dark); /* Use consistent text color */
-        }
-
-        /* First column (ID) can have slightly different styling if needed */
-        .auctions-table td:first-child {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        /* Status badge styling remains the same */
-
 
         .auctions-table th {
             text-align: left;
@@ -349,16 +330,17 @@
         .auction-name {
             font-weight: 500;
         }
-        .filter-box select {
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 0.9rem;
-        }
+
+        /* Disabled button state */
+        .btn-action.disabled { pointer-events: none; /* blocks mouse clicks */ opacity: 0.8; /* makes button look greyed */ cursor: not-allowed; /* shows forbidden cursor */ }
+
+
+
+
     </style>
 </head>
-
 <body>
+<!-- Use your existing sidebar structure -->
 <!-- Toggle Button -->
 <button class="menu-toggle" onclick="toggleMenu(event)">
     <i class="fas fa-bars"></i>
@@ -367,87 +349,74 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h2><i class="fas fa-palette"></i> ArtSea</h2>
+        <h2 class="admin-title">ArtSea Admin</h2>
     </div>
     <div class="sidebar-menu">
-        <a href="/seller-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
-        <a href="/seller-upcoming-auctions"><i class="fas fa-gavel"></i> <span>Auctions</span></a>
-        <a href="/artwork-applications" class="active"><i class="fas fa-file-alt"></i> <span>Listing Status</span></a>
-        <a href="/seller-orders/pending"><i class="fas fa-box"></i> <span>Process Order</span></a>
-        <a href="/seller-orders/processed"><i class="fas fa-shopping-bag"></i> <span>Sales</span></a>
-<!--        <a href="#"><i class="fas fa-shopping-bag"></i> <span>Sales</span></a>-->
-<!--        <a href="#"><i class="fas fa-wallet"></i> <span>Payments</span></a>-->
-<!--        <a href="#"><i class="fas fa-envelope"></i> <span>Messages</span></a>-->
-<!--        <a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a>-->
+        <a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+        <a href="/admin-verify-users"><i class="fas fa-users-cog"></i> <span>User Management</span></a>
+        <a href="/admin-manage-auction"><i class="fas fa-gavel"></i> <span>Auction Control</span></a>
+        <a href="/admin-manage-category"><i class="fas fa-swatchbook"></i> <span>Category Control</span></a>
+        <a href="/admin-manage-artwork"><i class="fas fa-palette"></i> <span>Artwork Control</span></a>
+        <!--            <a href="#"><i class="fas fa-chart-line"></i> <span>Analytics</span></a>-->
+        <!--            <a href="#"><i class="fas fa-money-bill-wave"></i> <span>Transactions</span></a>-->
+        <!--            <a href="#"><i class="fas fa-flag"></i> <span>Reports</span></a>-->
+        <!--            <a href="#"><i class="fas fa-cog"></i> <span>System Settings</span></a>-->
+        <a href="/admin-manage-slider"><i class="fas fa-images"></i> <span>Slider Control</span></a>
+        <a href="/admin-artwork-status" class="active"><i class="fas fa-chart-bar"></i> <span>Artworks Status</span></a>
         <a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
     </div>
 </div>
-
-<!-- Main Content -->
 <div class="main">
-    <div class="header">
-        <div class="dashboard-title">View Listing Status</div>
-        <div class="user-profile">
-            <img src="woman.jpg" alt="User">
-            <div class="user-info">
-                <span class="user-name" th:if="${session.user != null}" th:text="${session.user.username}"></span>
-            </div>
-        </div>
-    </div>
-
     <div class="page-header">
         <div class="page-title">
-            <i class="fas fa-file-alt"></i> Listing Status
+            <i class="fas fa-chart-bar"></i>Artworks
         </div>
     </div>
 
     <div class="table-container">
         <div class="table-header">
-            <div class="table-title">All Artworks</div>
+            <div class="table-title">Artworks Sales</div>
             <div class="table-actions">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search artworks..." id="searchInput">
                 </div>
-                <!-- Status Filter -->
+                <!--  Status Filter -->
                 <div class="filter-box">
                     <select id="statusFilter">
                         <option value="">All</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="APPROVED">Approved</option>
-                        <option value="REJECTED">Rejected</option>
+                        <option value="Sold">Sold</option>
+                        <option value="Unsold">Unsold</option>
+                        <option value="Payment Pending">Payment Pending</option>
+                        <option value="Payment Completed">Payment Completed</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <!-- Check if artworks list is empty -->
-        <div th:if="${artworks == null or artworks.isEmpty()}">
-            <p class="no-auctions-message">No Applications Submitted</p>
-        </div>
-
-        <!-- Display artworks if list is not empty -->
-        <table class="auctions-table" th:if="${artworks != null and not artworks.isEmpty()}">
+        <table class="auctions-table">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Artwork Name</th>
-                <th>Auction Name</th>
+                <th>Artwork ID</th>
+                <th>Artwork Title</th>
+                <th>Auction</th>
                 <th>Status</th>
-                <th>Rejection Reason</th>
+                <th>Remarks</th>
             </tr>
             </thead>
             <tbody>
-            <!-- Show artworks where current time is before auction applyEndTime -->
             <tr th:each="artwork : ${artworks}">
-                <td th:text="${artwork.artworkId}"></td>
-                <td th:text="${artwork.title}"></td>
-                <td th:text="${artwork.auction.auctionName}"></td>
-                <td th:text="${artwork.status}"></td>
-                <td th:text="${artwork.rejectionReason}"></td>
+                <td th:text="${artwork[0]}">1</td>
+                <td th:text="${artwork[1]}">Artwork Name</td>
+                <td th:text="${artwork[2]}">Auction Name</td>
+                <td th:text="${artwork[3]}"
+                    th:class="${artwork[3] == 'Sold' ? 'status-sold' : 'status-unsold'}">Sold / Unsold</td>
+                <td th:text="${artwork[4]}">Payment Pending / Payment Completed / Order Processed / -</td>
             </tr>
             </tbody>
         </table>
+
+
         <div class="pagination">
             <div class="page-info"></div>
             <div class="page-nav"></div>
@@ -456,115 +425,84 @@
 </div>
 
 <script>
-    // Simplified JavaScript for search, filter, and pagination
-    document.addEventListener('DOMContentLoaded', function() {
-        const rows = document.querySelectorAll('.auctions-table tbody tr');
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".auctions-table tbody tr");
+        const rowsPerPage = 5;
+        const pageNav = document.querySelector(".page-nav");
+        const pageInfo = document.querySelector(".page-info");
+        let currentPage = 1;
+        let filteredRows = Array.from(rows);
+
         const searchInput = document.getElementById('searchInput');
         const statusFilter = document.getElementById('statusFilter');
-        const pageInfo = document.querySelector('.page-info');
-        const pageNav = document.querySelector('.page-nav');
 
-        const rowsPerPage = 5;
-        let currentPage = 1;
-
-        function renderTable() {
+        function filterRows() {
             const searchTerm = searchInput.value.toLowerCase();
-            const statusValue = statusFilter.value;
+            const status = statusFilter.value;
 
-            let filteredRows = Array.from(rows).filter(row => {
-                // Get the artwork name from the second column (index 1)
-                const artworkName = row.cells[1].textContent.toLowerCase();
-                const status = row.cells[3].textContent.trim();
-
-                const matchesSearch = !searchTerm || artworkName.includes(searchTerm);
-                const matchesStatus = !statusValue || status === statusValue;
-
+            filteredRows = Array.from(rows).filter(row => {
+                const rowText = row.textContent.toLowerCase();
+                const rowStatus = row.querySelector("td:nth-child(4)").textContent.trim();
+                const matchesSearch = rowText.includes(searchTerm);
+                const matchesStatus = !status || rowStatus === status;
                 return matchesSearch && matchesStatus;
             });
 
-            // Pagination setup
-            const totalRows = filteredRows.length;
-            const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
-            if (currentPage > totalPages) currentPage = totalPages;
+            currentPage = 1;
+            displayRows(currentPage);
+            setupPagination();
+        }
 
-            const start = (currentPage - 1) * rowsPerPage;
+        function displayRows(page) {
+            const start = (page - 1) * rowsPerPage;
             const end = start + rowsPerPage;
 
-            // Show/hide rows
             rows.forEach(row => row.style.display = "none");
             filteredRows.slice(start, end).forEach(row => row.style.display = "");
 
-            // Update page info
-            const showingStart = totalRows === 0 ? 0 : start + 1;
-            const showingEnd = Math.min(end, totalRows);
-            if (pageInfo) {
-                pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${totalRows} entries`;
+            pageInfo.textContent = filteredRows.length > 0
+                ? `Showing ${start + 1} to ${Math.min(end, filteredRows.length)} of ${filteredRows.length} entries`
+                : "No matching entries";
+        }
+
+        function setupPagination() {
+            pageNav.innerHTML = "";
+            const totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
+
+            const prevBtn = document.createElement("button");
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.addEventListener("click", () => {
+                if (currentPage > 1) { currentPage--; displayRows(currentPage); setupPagination(); }
+            });
+            pageNav.appendChild(prevBtn);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = i;
+                if (i === currentPage) btn.classList.add("active");
+                btn.addEventListener("click", () => { currentPage = i; displayRows(currentPage); setupPagination(); });
+                pageNav.appendChild(btn);
             }
 
-            // Create pagination buttons
-            if (pageNav) {
-                pageNav.innerHTML = '';
-
-                // Previous button
-                const prevButton = document.createElement('button');
-                prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-                prevButton.disabled = currentPage === 1;
-                prevButton.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderTable();
-                    }
-                });
-                pageNav.appendChild(prevButton);
-
-                // Page number buttons
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageButton = document.createElement('button');
-                    pageButton.textContent = i;
-                    if (i === currentPage) {
-                        pageButton.classList.add('active');
-                    }
-                    pageButton.addEventListener('click', () => {
-                        currentPage = i;
-                        renderTable();
-                    });
-                    pageNav.appendChild(pageButton);
-                }
-
-                // Next button
-                const nextButton = document.createElement('button');
-                nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
-                nextButton.disabled = currentPage === totalPages;
-                nextButton.addEventListener('click', () => {
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        renderTable();
-                    }
-                });
-                pageNav.appendChild(nextButton);
-            }
-        }
-
-        // Event listeners
-        if (searchInput) {
-            searchInput.addEventListener("input", () => {
-                currentPage = 1;
-                renderTable();
+            const nextBtn = document.createElement("button");
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.addEventListener("click", () => {
+                if (currentPage < totalPages) { currentPage++; displayRows(currentPage); setupPagination(); }
             });
+            pageNav.appendChild(nextBtn);
         }
 
-        if (statusFilter) {
-            statusFilter.addEventListener("change", () => {
-                currentPage = 1;
-                renderTable();
-            });
-        }
+        // Attach search and filter events
+        searchInput.addEventListener('input', filterRows);
+        statusFilter.addEventListener('change', filterRows);
 
-        // Initial render
-        renderTable();
+        // Initial load
+        filterRows();
     });
 </script>
+
 <script src="/sidebar.js"></script>
 </body>
-
 </html>

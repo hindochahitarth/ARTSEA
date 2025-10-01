@@ -12,6 +12,33 @@ import java.util.Optional;
 @Repository
 public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
 
+    @Query("""
+    SELECT a.artworkId,
+           a.title,
+           au.auctionName,
+           CASE
+               WHEN EXISTS (SELECT o FROM Order o WHERE o.bid.artwork = a) THEN 'Sold'
+               WHEN EXISTS (SELECT b FROM Bid b WHERE b.artwork = a) THEN 'Payment Pending'
+               ELSE 'Unsold'
+           END AS status,
+           CASE
+               WHEN EXISTS (SELECT o FROM Order o WHERE o.bid.artwork = a AND o.status = 'SUCCESS') THEN 'Payment Completed'
+               WHEN EXISTS (SELECT o FROM Order o WHERE o.bid.artwork = a AND o.status = 'PROCESSED') THEN 'Order Processed'
+               WHEN EXISTS (SELECT b FROM Bid b WHERE b.artwork = a) THEN 'Payment Pending'
+               ELSE '-'
+           END AS remarks
+    FROM Artwork a
+    JOIN a.auction au
+    WHERE a.status = :status
+""")
+    List<Object[]> getAllArtworkStatus(@Param("status") Artwork.ArtworkStatus status);
+
+
+
+
+
+
+
     List<Artwork> findByTitleContainingIgnoreCaseAndStatus(String title, Artwork.ArtworkStatus status);
 
 

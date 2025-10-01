@@ -363,11 +363,11 @@
 </section>
 
 <!-- RECENT AUCTIONS SECTION -->
-<<<<<<< HEAD
-<section class="section">
-=======
 <section class="section" th:if="${pastAuctions != null and !pastAuctions.isEmpty()}">
+    <h2>RECENT AUCTIONS</h2>
+    <div class="auction-grid">
         <th:block th:each="pastauction : ${pastAuctions}">
+            <div class="auction-card">
                 <img th:src="@{${pastauction.imageUrl}}" th:alt="${pastauction.auctionName}">
                 <div class="card-content">
                     <div th:text="${pastauction.auctionName}"></div>

@@ -182,14 +182,7 @@
                 </div>
             </div>
         </div>
-        <!-- All Bids Tab -->
-        <div class="tab-content" id="all-bids">
-            <h2 class="section-title">Bids History</h2>
-            <div class="bids-grid">
-                <div class="bid-card" th:each="bidData : ${allBids}">
-                    <img th:src="@{${bidData.artwork.imageUrl}}"
-                         th:alt="${bidData.artwork.title}"
-                         class="bid-image">
+    </div>
 
 
 

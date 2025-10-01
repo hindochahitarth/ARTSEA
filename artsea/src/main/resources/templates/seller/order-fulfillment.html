@@ -467,10 +467,114 @@
             </tr>
             </tbody>
         </table>
-
+        <div class="pagination">
+            <div class="page-info"></div>
+            <div class="page-nav"></div>
+        </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('.auctions-table tbody tr');
+        const searchInput = document.getElementById('searchInput');
+        const pageInfo = document.querySelector('.page-info');
+        const pageNav = document.querySelector('.page-nav');
 
+        const rowsPerPage = 5;
+        let currentPage = 1;
+
+        function renderTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            let filteredRows = Array.from(rows).filter(row => {
+                // Get the auction name from the second column (index 1)
+                const auctionName = row.cells[1].textContent.toLowerCase();
+                // Get the artwork name from the third column (index 2)
+                const artworkName = row.cells[2].textContent.toLowerCase();
+
+                // Filter by search term in either auction name or artwork name
+                const matchesSearch = !searchTerm ||
+                    auctionName.includes(searchTerm) ||
+                    artworkName.includes(searchTerm);
+
+                return matchesSearch;
+            });
+
+            // Pagination setup
+            const totalRows = filteredRows.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+
+            // Show/hide rows
+            rows.forEach(row => row.style.display = "none");
+            filteredRows.slice(start, end).forEach(row => row.style.display = "");
+
+            // Update page info
+            const showingStart = totalRows === 0 ? 0 : start + 1;
+            const showingEnd = Math.min(end, totalRows);
+            if (pageInfo) {
+                pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${totalRows} entries`;
+            }
+
+            // Create pagination buttons
+            if (pageNav) {
+                pageNav.innerHTML = '';
+
+                // Previous button
+                const prevButton = document.createElement('button');
+                prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderTable();
+                    }
+                });
+                pageNav.appendChild(prevButton);
+
+                // Page number buttons
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageButton = document.createElement('button');
+                    pageButton.textContent = i;
+                    if (i === currentPage) {
+                        pageButton.classList.add('active');
+                    }
+                    pageButton.addEventListener('click', () => {
+                        currentPage = i;
+                        renderTable();
+                    });
+                    pageNav.appendChild(pageButton);
+                }
+
+                // Next button
+                const nextButton = document.createElement('button');
+                nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextButton.disabled = currentPage === totalPages;
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderTable();
+                    }
+                });
+                pageNav.appendChild(nextButton);
+            }
+        }
+
+        // Event listener for search input
+        if (searchInput) {
+            searchInput.addEventListener("input", () => {
+                currentPage = 1;
+                renderTable();
+            });
+        }
+
+        // Initial render
+        renderTable();
+    });
+</script>
 <script src="/sidebar.js"></script>
 </body>
 

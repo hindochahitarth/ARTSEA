@@ -29,7 +29,7 @@ public class SliderController {
     private AuctionService auctionService;
 
     // Admin slider management page
-    @GetMapping("/admin-slider-manage")
+    @GetMapping("/admin-manage-slider")
     public String adminSliderManage(HttpSession session, Model model) {
         Object user = session.getAttribute("user");
         if (user == null) {
@@ -87,14 +87,14 @@ public class SliderController {
         sliderService.saveSlider(slider);
 
         // 5. Redirect to admin slider manage page
-        return "redirect:/admin-slider-manage";
+        return "redirect:/admin-manage-slider";
     }
 
     // Delete slider
     @GetMapping("/admin-slider-delete/{id}")
     public String deleteSlider(@PathVariable Long id) {
         sliderService.deleteSlider(id);
-        return "redirect:/admin-slider-manage";
+        return "redirect:/admin-manage-slider";
     }
 
 //    // Fetch completed auctions for dropdown (optional AJAX)
