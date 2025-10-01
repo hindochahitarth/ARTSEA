@@ -4,7 +4,9 @@ import com.art.artsea.model.Artwork;
 import com.art.artsea.model.Auction;
 import com.art.artsea.repository.ArtworkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class ArtworkService {
     }
 
     public List<Artwork> getAllAuctions() {
-        return artworkRepository.findAll();
+        return artworkRepository.findAll(Sort.by(Sort.Direction.DESC, "artworkId"));
     }
     public Artwork getArtworkById(Long id) {
         return artworkRepository.findById(id)

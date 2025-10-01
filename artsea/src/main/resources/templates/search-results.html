@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.th.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <title>ArtSea - Past Auction Results</title>
+    <style>
+        /* Base Styles */
+        .past-auctions-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .past-auction-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .past-auction-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .past-auction-title {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .past-auction-title {
+                margin-bottom: 0;
+                text-align: left;
+            }
+        }
+
+        .past-auction-tabs {
+            display: flex;
+            height: 50px;
+            border: 1px solid #c0c0c0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .past-auction-tab {
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 500;
+            background: white;
+            color: #555;
+            transition: all 0.3s ease;
+        }
+
+        .past-auction-tab:not(.active):hover {
+            background: #f1f5f9;
+            color: #003366;
+        }
+
+        .past-auction-tab.active {
+            background: #003366;
+            color: white;
+        }
+
+        .artwork-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            padding: 0 10px;
+        }
+
+        @media (min-width: 640px) {
+            .artwork-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .artwork-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .artwork-card {
+            max-width: 410px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            background: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .artwork-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 248px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .artwork-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .artwork-image-wrapper img:hover {
+            transform: scale(1.03);
+        }
+
+        .sold-badge, .unsold-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+
+        .sold-badge {
+            background: #38a169; /* Green */
+        }
+
+        .unsold-badge {
+            background: #718096; /* Gray */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .artwork-info {
+            padding: 0;
+        }
+
+        .artwork-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a202c;
+        }
+
+        .artist-name {
+            font-size: 14px;
+            font-weight: 400;
+            color: #718096;
+            margin-bottom: 16px;
+        }
+
+        .artwork-divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 16px 0;
+        }
+
+        .highest-bid {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .sale-amount {
+            color: #2b6cb0;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background: #24221D;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #003366;
+        }
+
+        .past-auction-filter {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 25px;
+        }
+
+        .past-auction-filter select {
+            padding: 8px 16px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            background: white;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .past-auction-title {
+                font-size: 26px;
+            }
+
+            .past-auction-tabs {
+                width: 100%;
+            }
+
+            .past-auction-filter {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .artwork-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .artwork-card {
+                max-width: 100%;
+            }
+
+            .past-auction-tabs {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .past-auction-tab {
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!-- Navbar -->
+<div th:replace="header :: header"></div>
+
+<!-- Search Results Content -->
+<div class="past-auctions-container">
+    <div class="past-auction-header">
+        <h1 class="past-auction-title">Search Result</h1>
+
+        <a href="/" class="back-btn">← Back to Home</a>
+    </div>
+
+
+    <div class="artwork-grid" th:if="${artworks != null and !artworks.isEmpty()}">
+        <div class="artwork-card" th:each="artwork : ${artworks}">
+            <div class="artwork-image-wrapper">
+                <img th:src="@{${artwork.imageUrl}}" th:alt="${artwork.title}">
+                <span th:classappend="${artwork.sold} ? 'sold-badge' : 'unsold-badge'">
+                    <span th:if="${artwork.sold}" th:text="'Sold'"></span>
+                    <span th:unless="${artwork.sold}" th:text="'Unsold'"></span>
+                </span>
+            </div>
+            <div class="artwork-info">
+                <h3 class="artwork-title" th:text="${artwork.title}">Artwork Title</h3>
+                <p class="artist-name" th:text="${artwork.artistName}">Artist Name</p>
+
+                <hr class="artwork-divider">
+
+                <!-- Sold / Unsold display -->
+                <p class="highest-bid" th:text="${artwork.sold} ? 'Sold For: ₹' + ${artwork.highestBid} + ' to ' + ${artwork.highestBidderName} : 'Unsold'">
+                    <!-- fallback content if Thymeleaf fails -->
+                    Unsold
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <p th:if="${artworks == null or artworks.isEmpty()}" style="text-align:center; margin-top:20px;">
+        No artworks found for this Search.
+    </p>
+</div>
+
+<div th:replace="footer :: footer"></div>
+<script src="/home.js"></script>
+
+<script>
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.past-auction-tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+
+            // Here you would typically load different content based on the selected tab
+            // For now, we'll just log which tab was clicked
+            console.log(tab.textContent + ' clicked');
+        });
+    });
+
+    // Mobile menu functionality from home.html would go here
+    // ...
+</script>
+</body>
+</html>

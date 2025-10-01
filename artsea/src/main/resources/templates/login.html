@@ -128,10 +128,6 @@
             <form id="signupForm" onsubmit="return false;">
                 <input type="text" id="signup-name" placeholder="Enter Name">
                 <input type="email" id="signup-email" placeholder="Enter Email ID">
-<!--                <div class="phone-input">-->
-<!--                    <input type="text" class="country-code" value="+91" readonly>-->
-<!--                    <input type="tel" class="mobile-number" id="signup-mobile" placeholder="Mobile Number">-->
-<!--                </div>-->
                 <input type="password" id="signup-password" placeholder="Enter Password">
                 <div class="terms">
                     <input type="checkbox" id="terms-signup">
@@ -157,6 +153,11 @@
                     <input type="checkbox" id="terms-signin">
                     <label for="terms-signin">By Agreeing to <a href="/terms-and-conditions " target="_blank">Terms & Conditions</a></label>
                 </div>
+                <p style="text-align:center; margin:5px 0 15px;">
+                    <a href="/forgot-password" style="font-size:0.95rem; color:#222; text-decoration:underline;">
+                        Forgot Password?
+                    </a>
+                </p>
                 <button type="button" class="submit-btn" id="signin-send-otp">Login</button>
             </form>
         </div>
@@ -242,7 +243,6 @@
             }
 
             try {
-                // Format 1: Using URLSearchParams (form-urlencoded)
                 const formData = new URLSearchParams();
                 formData.append('email', email);
                 formData.append('otp', otp);
@@ -258,13 +258,14 @@
                     body: formData
                 });
 
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Verification failed');
-                }
-
                 const data = await response.json();
+
+                // Check status returned by backend
+                if (data.status && data.status.toLowerCase().includes("error")) {
+                    document.getElementById('signup-otp-status').style.color = 'red';
+                    document.getElementById('signup-otp-status').textContent = data.message || 'Verification failed';
+                    return;
+                }
 
                 // Success handling
                 document.getElementById('signup-otp-status').style.color = 'green';
@@ -283,6 +284,7 @@
                 document.getElementById('signup-otp-status').textContent = error.message || 'Verification failed. Please try again.';
             }
         };
+
 
         document.getElementById('signin-send-otp').onclick = async function() {
             const email = document.getElementById('signin-email').value;

@@ -390,7 +390,7 @@
     <div class="header">
         <div class="dashboard-title">View Pending Orders</div>
         <div class="user-profile">
-            <img src="woman.jpg" alt="User">
+            <img th:src="@{/woman.jpg}" alt="User">
             <div class="user-info">
                 <span class="user-name" th:if="${session.user != null}" th:text="${session.user.username}"></span>
             </div>

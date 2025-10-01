@@ -271,33 +271,36 @@
 <!-- Slider Section -->
 <div class="slider" id="slider">
     <div class="slides" id="slides">
-        <div class="slide">
-            <img src="/image1.jpeg" alt="Slide 1">
+
+        <!-- If sliders exist -->
+        <div class="slide" th:each="slider : ${sliders}" th:if="${not #lists.isEmpty(sliders)}">
+            <img th:src="@{${slider.imageUrl}}" alt="Slider Banner">
+
             <div class="slide-caption">
-                <h2>ICONIC MASTERS</h2>
-                <p>29 Jul - 30 Jul, 2025</p>
-                <a href="#" class="btn">View Result</a>
+                <h2 th:text="${slider.auction.auctionName}">Auction Name</h2>
+                <p>
+                    <span th:text="${#temporals.format(slider.auction.startTime, 'dd MMM')}"></span> -
+                    <span th:text="${#temporals.format(slider.auction.endTime, 'dd MMM, yyyy')}"></span>
+                </p>
+                <a th:href="@{'/past-auction/' + ${slider.auction.auctionId}}" class="btn">View Result</a>
             </div>
         </div>
-        <div class="slide">
-            <img src="/image2.jpeg" alt="Slide 2">
+
+        <!-- Fallback: if no sliders -->
+        <div class="slide" th:if="${#lists.isEmpty(sliders)}">
+            <img th:src="@{/who-we-are-banner.jpg}" alt="Default Banner">
             <div class="slide-caption">
-                <h2>MODERN ART</h2>
-                <p>26 Jun - 27 Jun, 2025</p>
-                <a href="#" class="btn">View Result</a>
+                <h2>Welcome to ArtSea</h2>
+                <p>Discover the world of art with us</p>
+                <a href="/who-we-are" class="btn">Know More</a>
             </div>
         </div>
-        <div class="slide">
-            <img src="/image3.jpeg" alt="Slide 3">
-            <div class="slide-caption">
-                <h2>COLLECTORS CHOICE</h2>
-                <p>26 Jun - 27 Jun, 2025</p>
-                <a href="#" class="btn">View Result</a>
-            </div>
-        </div>
+
     </div>
     <div class="slider-dots" id="slider-dots"></div>
 </div>
+
+
 
 <!-- AUCTIONS ON THE WAY SECTION -->
 <section class="section section-highlight">
@@ -336,7 +339,7 @@
         </th:block>
     </div>
 </section>
-<section class="section">
+<section class="section" th:if="${upcomingAuctions != null and !upcomingAuctions.isEmpty()}" >
     <h2>UPCOMING AUCTIONS</h2>
     <div class="auction-grid">
         <th:block th:each="auction : ${upcomingAuctions}">
@@ -360,11 +363,11 @@
 </section>
 
 <!-- RECENT AUCTIONS SECTION -->
+<<<<<<< HEAD
 <section class="section">
-    <h2>RECENT AUCTIONS</h2>
-    <div class="auction-grid">
+=======
+<section class="section" th:if="${pastAuctions != null and !pastAuctions.isEmpty()}">
         <th:block th:each="pastauction : ${pastAuctions}">
-            <div class="auction-card">
                 <img th:src="@{${pastauction.imageUrl}}" th:alt="${pastauction.auctionName}">
                 <div class="card-content">
                     <div th:text="${pastauction.auctionName}"></div>

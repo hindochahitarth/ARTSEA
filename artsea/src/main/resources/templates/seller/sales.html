@@ -374,8 +374,8 @@
         <a href="/seller-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
         <a href="/seller-upcoming-auctions"><i class="fas fa-gavel"></i> <span>Auctions</span></a>
         <a href="/artwork-applications" ><i class="fas fa-file-alt"></i> <span>Listing Status</span></a>
-        <a href="/seller-orders/pending" class="active"><i class="fas fa-box"></i> <span>Process Order</span></a>
-        <a href="/seller-orders/processed"><i class="fas fa-shopping-bag"></i> <span>Sales</span></a>
+        <a href="/seller-orders/pending"><i class="fas fa-box"></i> <span>Process Order</span></a>
+        <a href="/seller-orders/processed" class="active"><i class="fas fa-shopping-bag"></i> <span>Sales</span></a>
         <!--            <a href="#"><i class="fas fa-wallet"></i> <span>Payments</span></a>-->
         <!--            <a href="#"><i class="fas fa-envelope"></i> <span>Messages</span></a>-->
         <!--            <a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a>-->
@@ -388,7 +388,7 @@
     <div class="header">
         <div class="dashboard-title">View Sales</div>
         <div class="user-profile">
-            <img src="woman.jpg" alt="User">
+            <img th:src="@{/woman.jpg}" alt="User">
             <div class="user-info">
                 <span class="user-name" th:if="${session.user != null}" th:text="${session.user.username}"></span>
             </div>

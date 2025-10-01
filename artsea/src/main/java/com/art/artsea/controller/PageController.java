@@ -40,11 +40,16 @@ public class PageController {
     private ArtworkRepository artworkRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private BidRepository bidRepository;
 
     @Autowired
     private BidService bidService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SliderService sliderService;
 
     @GetMapping("/")
     public String showHome(Model model) {
@@ -58,8 +63,39 @@ public class PageController {
         List<Auction> pastAuctions = auctionService.getPastAuctions();
         model.addAttribute("pastAuctions", pastAuctions);
 
+        //  Fetch sliders
+        List<Slider> sliders = sliderService.getAllSliders();
+        model.addAttribute("sliders", sliders);
+
         return "home";
     }
+
+    @GetMapping("/search")
+    public String searchArtworks(@RequestParam("query") String query, Model model) {
+        // Fetch artworks that match title and are APPROVED
+        List<Artwork> artworks = artworkRepository
+                .findByTitleContainingIgnoreCaseAndStatus(query, Artwork.ArtworkStatus.APPROVED);
+
+        // Loop artworks and check if they have bids (to mark sold/unsold)
+        for (Artwork artwork : artworks) {
+            List<Bid> bids = bidRepository.findTopBidByArtworkId(artwork.getArtworkId());
+
+            if (bids != null && !bids.isEmpty()) {
+                Bid highestBid = bids.get(0);  // top bid
+                artwork.setSold(true);
+                artwork.setHighestBid(highestBid.getBidAmount().doubleValue());
+                artwork.setHighestBidderName(highestBid.getUser().getUsername());
+            } else {
+                artwork.setSold(false);
+            }
+        }
+
+        model.addAttribute("artworks", artworks);
+        model.addAttribute("query", query);
+
+        return "search-results";
+    }
+
 
 
 
@@ -236,6 +272,10 @@ public class PageController {
     @GetMapping("/buy")
     public String showBuy() {
         return "buy";
+    }
+    @GetMapping("/forgot-password")
+    public String showForgotPassword() {
+        return "buyer-reset-password";
     }
 
     @GetMapping("/sell")
@@ -455,6 +495,11 @@ public class PageController {
 
         // Categories
         model.addAttribute("totalCategories", dashboardService.getTotalCategories());
+
+        //Order Amounts
+        // Revenue & Highest Order
+        model.addAttribute("totalRevenue", dashboardService.getTotalRevenue());
+        model.addAttribute("highestOrder", dashboardService.getHighestOrderAmount());
 
         return "admin/dashboard"; // dashboard template
     }
@@ -697,6 +742,10 @@ public class PageController {
     @GetMapping("/seller")
     public String sellerLoginPage() {
         return "seller/seller-login";
+    }
+    @GetMapping("/seller-forgot-password")
+    public String sellerForgotPasswordPage() {
+        return "seller/reset-password";
     }
 
     @GetMapping("/seller-dashboard")

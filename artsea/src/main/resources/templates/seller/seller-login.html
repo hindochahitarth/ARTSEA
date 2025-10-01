@@ -89,12 +89,6 @@
       color: #7f8c8d;
       margin-bottom: 25px;
       text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .terms input[type="checkbox"] {
-      margin-right: 8px;
     }
     .terms a {
       color: #3498db;
@@ -149,6 +143,32 @@
       margin-bottom: 8px;
       color: #34495e;
     }
+    /* New styles for terms sections */
+    .terms-checkbox {
+      display: inline-flex;        /* Use inline-flex so it doesn’t stretch full width */
+      align-items: center;         /* Vertically center checkbox and label */
+      justify-content: center;     /* Horizontally center the content */
+      gap: 5px;                    /* Small space between checkbox and label */
+      margin: 0 auto 10px auto;    /* Center container horizontally */
+      white-space: nowrap;         /* Prevent wrapping */
+    }
+
+    .terms-checkbox input[type="checkbox"] {
+      margin: 0;                   /* Remove default spacing */
+    }
+
+    .terms-checkbox label {
+      margin: 0;                   /* Remove any default margin */
+    }
+
+
+
+    .forgot-password {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -167,8 +187,10 @@
       <input type="email" id="signup-email" placeholder="Business Email">
       <input type="password" id="signup-password" placeholder="Create Password">
       <div class="terms">
-        <input type="checkbox" id="terms-signup">
-        <label for="terms-signup">I agree to the <a href="/terms-and-conditions" target="_blank">Seller Terms</a></label>
+        <div class="terms-checkbox">
+          <input type="checkbox" id="terms-signup">
+          <label for="terms-signup">I agree to the <a href="/terms-and-conditions" target="_blank">Seller Terms</a></label>
+        </div>
       </div>
       <button type="button" class="submit-btn" id="signup-send-otp">SEND VERIFICATION CODE</button>
       <div id="signup-otp-section" style="display:none; margin-top:15px;">
@@ -186,17 +208,16 @@
       <input type="email" id="signin-email" placeholder="Business Email">
       <input type="password" id="signin-password" placeholder="Password">
       <div class="terms">
-        <input type="checkbox" id="remember-me">
-        <label for="remember-me">I accept T&c</label>
-        <span style="margin:0 5px;">•</span>
-        <a href="/seller-forgot-password">Forgot password?</a>
+        <div class="terms-checkbox">
+          <input type="checkbox" id="remember-me">
+          <label for="remember-me">I accept T&c</label>
+        </div>
+        <div class="forgot-password">
+          <a href="/seller-forgot-password">Forgot password?</a>
+        </div>
       </div>
       <button type="button" class="submit-btn" id="signin-send-otp">LOGIN TO SELLER DASHBOARD</button>
     </form>
-
-<!--    <div class="alt-login">-->
-<!--      Need help? <a href="/seller-support">Contact Seller Support</a>-->
-<!--    </div>-->
   </div>
 </div>
 
@@ -259,6 +280,9 @@
   };
 
   document.getElementById('signup-verify-otp').onclick = async function() {
+    const signupForm = document.getElementById('signupForm');
+    const otpSection = document.getElementById('signup-otp-section');
+    const otpStatus = document.getElementById('signup-otp-status');
     const email = document.getElementById('signup-email').value;
     const otp = document.getElementById('signup-otp').value;
     const name = document.getElementById('signup-name').value;
@@ -286,37 +310,36 @@
         body: formData
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Seller verification failed');
-      }
-
       const data = await response.json();
 
+      if (data.status !== 'OTP verified successfully') {
+        otpStatus.style.color = 'red';
+        otpStatus.textContent = data.message || 'OTP verification failed';
+        return; // Stop execution; do NOT reset or redirect
+      }
+
       // Success handling
-      document.getElementById('signup-otp-status').style.color = 'green';
-      document.getElementById('signup-otp-status').textContent = 'Seller account verified! Redirecting...';
+      otpStatus.style.color = 'green';
+      otpStatus.textContent = 'Seller account verified! Redirecting...';
 
-      // Clear form fields manually (safer than .reset())
-      document.getElementById('signup-name').value = '';
-      document.getElementById('signup-email').value = '';
-      document.getElementById('signup-password').value = '';
-      document.getElementById('signup-otp').value = '';
-      document.getElementById('signup-otp-section').style.display = 'none';
+      // Reset form and hide OTP input
+      signupForm.reset();
+      otpSection.style.display = 'none';
 
-      // Switch to login tab after delay
+      // Switch to login tab
       setTimeout(() => {
-        showSigninBtn.click(); // Programmatically click the sign-in tab button
-        document.getElementById('signin-email').value = email; // Pre-fill email
-        document.getElementById('signin-password').focus(); // Focus on password field
+        document.getElementById('show-signin').click();
+        document.getElementById('signin-email').value = email;
+        document.getElementById('signin-password').focus();
       }, 1500);
 
     } catch (error) {
       console.error('Seller verification error:', error);
-      document.getElementById('signup-otp-status').style.color = 'red';
-      document.getElementById('signup-otp-status').textContent = error.message || 'Seller verification failed. Please try again.';
+      otpStatus.style.color = 'red';
+      otpStatus.textContent = error.message || 'Seller verification failed. Please try again.';
     }
   };
+
 
   document.getElementById('signin-send-otp').onclick = async function() {
     const email = document.getElementById('signin-email').value;

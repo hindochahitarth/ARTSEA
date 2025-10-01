@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSea Admin - Slider Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles-admin.css}">
+    <style>
+        /* Use your existing styles-admin.css */
+        /* Additional styles specific to slider management */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        .btn-add {
+            padding: 0.75rem 1.5rem;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #05b58b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 214, 160, 0.2);
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .sliders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sliders-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: var(--gray);
+            background: rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sliders-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            vertical-align: middle;
+        }
+
+        .sliders-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .sliders-table tr:hover {
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .slider-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .slider-image {
+            width: 100px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: var(--info);
+        }
+
+        .btn-edit:hover {
+            background: #0f7aa5;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: #e03565;
+            transform: translateY(-2px);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .page-info {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .page-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-nav button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .page-nav button:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .page-nav button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Form styles for adding/editing slider */
+        .form-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-title i {
+            margin-right: 0.75rem;
+            color: var(--accent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .form-group .field-info {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group .field-info i {
+            margin-right: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(43, 45, 66, 0.1);
+        }
+
+        .image-preview {
+            width: 200px;
+            height: 120px;
+            border: 1px dashed var(--gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(43, 45, 66, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #7a8599;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .sliders-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .table-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        /* Slider preview section */
+        .slider-preview-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .slider-preview {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+        }
+
+        .slider-item.active {
+            opacity: 1;
+        }
+
+        .slider-content {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            max-width: 60%;
+        }
+
+        .slider-content h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+
+        .slider-content p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .slider-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+
+<body>
+<!-- Toggle Button -->
+<button class="menu-toggle" onclick="toggleMenu(event)">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2 class="admin-title">ArtSea Admin</h2>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+        <a href="/admin-verify-users"><i class="fas fa-users-cog"></i> <span>User Management</span></a>
+        <a href="/admin-manage-auction"><i class="fas fa-gavel"></i> <span>Auction Control</span></a>
+        <a href="/admin-manage-category"><i class="fas fa-swatchbook"></i> <span>Category Control</span></a>
+        <a href="/admin-manage-artwork"><i class="fas fa-palette"></i> <span>Artwork Control</span></a>
+        <a href="/admin-manage-slider" class="active"><i class="fas fa-images"></i> <span>Slider Control</span></a>
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <div class="page-title">
+            <i class="fas fa-images"></i> Slider Control
+        </div>
+        <button class="btn-add" onclick="showAddForm()">
+            <i class="fas fa-plus"></i> Add Slider Item
+        </button>
+    </div>
+
+    <!-- Add/Edit Slider Form -->
+    <div class="form-container" id="sliderFormContainer" style="display: none;">
+        <div class="form-title">
+            <i class="fas fa-plus-circle"></i> <span id="formTitle">Add Slider Item</span>
+        </div>
+
+        <form id="sliderForm" method="post" action="/admin-save-slider" enctype="multipart/form-data">
+            <input type="hidden" id="slider_id" name="sliderId">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="auction_name">Select Auction *</label>
+                    <select id="auction_name" name="auctionId" class="form-control" required>
+                        <option value="">Select a past auction</option>
+                        <option th:each="auction : ${completedAuctions}"
+                                th:value="${auction.auctionId}"
+                                th:text="${auction.auctionName}">
+                        </option>
+                    </select>
+                    <div class="field-info">
+                        <i class="fas fa-info-circle"></i> Only completed auctions are available for selection
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="slider_image">Slider Banner Image *</label>
+                    <input type="file" id="slider_image" name="sliderImage" class="form-control" accept="image/*" required>
+                    <div class="image-preview" id="imagePreview">
+                        <span>Preview will appear here</span>
+                    </div>
+                    <div class="field-info">
+                        <i class="fas fa-info-circle"></i> Recommended size: 800x400 pixels
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideForm()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Slider
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sliders Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <div class="table-title">Slider Items</div>
+            <div class="table-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search sliders..." id="searchInput">
+                </div>
+            </div>
+        </div>
+
+        <table class="sliders-table">
+            <thead>
+            <tr>
+                <th>Slider ID</th>
+                <th>Banner Image</th>
+                <th>Auction Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="slider : ${sliders}">
+                <tr th:attr="data-auction-id=${slider.auction.auctionId}">
+                    <td th:text="${slider.sliderId}"></td>
+                    <td><img th:src="@{${slider.imageUrl}}" alt="Banner" style="width: 150px;"></td>
+                    <td th:text="${slider.auction.auctionName}"></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action btn-edit" title="Edit"
+                                    th:onclick="'editSlider(' + ${slider.sliderId} + ')'">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-delete" title="Delete"
+                                    th:onclick="'confirmDelete(' + ${slider.sliderId} + ')'">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function showAddForm() {
+        document.getElementById('sliderFormContainer').style.display = 'block';
+    }
+
+    function hideForm() {
+        document.getElementById('sliderFormContainer').style.display = 'none';
+    }
+
+    // Image preview before upload
+    document.getElementById('slider_image').addEventListener('change', function(event){
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        const file = event.target.files[0];
+        if(file){
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            preview.appendChild(img);
+        } else {
+            preview.innerHTML = '<span>Preview will appear here</span>';
+        }
+    });
+</script>
+<script>
+    function editSlider(sliderId) {
+        const row = Array.from(document.querySelectorAll('.sliders-table tbody tr'))
+            .find(r => r.children[0].innerText == sliderId);
+
+        if (!row) return;
+
+        const auctionId = row.dataset.auctionId;
+        const imgSrc = row.children[1].querySelector('img').src;
+
+        // Show the form
+        showAddForm();
+        document.getElementById('formTitle').innerText = 'Edit Slider Item';
+        document.getElementById('slider_id').value = sliderId;
+
+        // Set auction select
+        const select = document.getElementById('auction_name');
+        select.value = auctionId;
+
+        // Set image preview
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        preview.appendChild(img);
+    }
+
+
+    function confirmDelete(sliderId) {
+        if(confirm("Are you sure you want to delete this slider?")) {
+            window.location.href = '/admin-slider-delete/' + sliderId;
+        }
+    }
+</script>
+
+<script src="/sidebar.js"></script>
+</body>
+
+</html>

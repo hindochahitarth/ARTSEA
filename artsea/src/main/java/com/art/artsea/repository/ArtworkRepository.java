@@ -12,7 +12,8 @@ import java.util.Optional;
 @Repository
 public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
 
-    
+    List<Artwork> findByTitleContainingIgnoreCaseAndStatus(String title, Artwork.ArtworkStatus status);
+
 
     // Find all artworks by user ID
     List<Artwork> findByUserUserId(Long userId);

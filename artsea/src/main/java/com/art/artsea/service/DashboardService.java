@@ -1,9 +1,6 @@
 package com.art.artsea.service;
 
-import com.art.artsea.repository.ArtworkRepository;
-import com.art.artsea.repository.AuctionRepository;
-import com.art.artsea.repository.CategoryRepository;
-import com.art.artsea.repository.UserRepository;
+import com.art.artsea.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +14,9 @@ public class DashboardService {
     private ArtworkRepository artworkRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+
 
     public DashboardService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -77,6 +77,18 @@ public class DashboardService {
     }
     public long getSellerPendingArtworks(Long sellerId) {
         return artworkRepository.countSellerPendingArtworks(sellerId);
+    }
+
+    // Total revenue from orders
+    public Double getTotalRevenue() {
+        Double total = orderRepository.getTotalAmount();
+        return total != null ? total : 0.0;
+    }
+
+    // Highest artwork amount
+    public Double getHighestOrderAmount() {
+        Double maxAmount = orderRepository.getHighestAmount();
+        return maxAmount != null ? maxAmount : 0.0;
     }
 
 

@@ -81,6 +81,19 @@ public class OtpService {
         return result;
     }
 
+    // For Forgot Password OTP verification
+    public boolean verifyOtpForForgotPassword(String email, String otp) {
+        OtpHolder holder = otpStore.get(email);
+
+        if (holder != null && holder.getOtp().equals(otp) &&
+                Duration.between(holder.getTime(), LocalDateTime.now()).toMinutes() <= 5) {
+            otpStore.remove(email);
+            return true;
+        }
+        return false;
+    }
+
+
     private static class OtpHolder {
         private final String otp;
         private final LocalDateTime time;
